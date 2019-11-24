@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>NoteBook System | 主页</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Editor Maekdown -->
+    <link rel="stylesheet" href="bower_components/editormd/css/style.css"/>
+    <link rel="stylesheet" href="bower_components/editormd/css/editormd.css"/>
+    <!-- ztree目录 -->
+    <link rel="stylesheet" href="bower_components/ztree/css/zTreeStyle/zTreeStyle.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="dist/css/skins/skin-black.min.css">
+    <link rel="stylesheet" href="bower_components/layer/skin/default/layer.css">
+    <link rel="stylesheet" href="bower_components/ztree/css/metroStyle/metroStyle.css"/>
+    <link rel="stylesheet" href="bower_components/treegrid/jquery.treegrid.css"/>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <style>
+        .editormd-html-preview {
+            width: 90%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<!--<body class="hold-transition skin-blue sidebar-mini">-->
+<body class="hold-transition skin-black sidebar-mini">
+<input id="fileName" type="hidden" th:value="${fileName}"/>
+<div class="wrapper">
+    <header class="main-header">
+        <!-- Logo -->
+        <a href="doIndexUI" class="logo">
+            <span class="logo-mini"><b>N</b></span>
+            <span class="logo-lg"><b>NoteBook</b></span>
+        </a>
+        <!-- Header Navbar -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown user user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          <span class="hidden-xs">
+                              <span>Username: <span th:text="${username}"/></span>
+                          </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div>
+        </div>
+    </header>
+    <aside class="main-sidebar">
+        <!-- sidebar -->
+        <section class="sidebar text-left">
+            <!-- Sidebar Menu -->
+            <ul class="sidebar-menu" data-widget="tree">
+                <!-- Treeview 1 -->
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-link"></i><span>系统管理</span>
+                        <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                    </a>
+                    <ul id="menus" class="treeview-menu"></ul>
+                </li>
+                <!-- ./treeview 1 -->
+                <!-- Treeview 2 -->
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-link"></i><span>在线文档</span>
+                        <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+                    </a>
+                    <ul id="md_menus" class="treeview-menu"></ul>
+                </li>
+                <!-- ./treeview 2 -->
+                <li>
+                    <a onclick="doPasswordUI()"><i class="fa fa-gear"></i><span>修改密码</span></a>
+                </li>
+                <li>
+                    <a href="doLogout"><i class="fa fa-arrow-left"></i><span>退出登录</span></a>
+                </li>
+            </ul>
+            <!-- /.sidebar-menu -->
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Main content -->
+        <section id="mainContentId" class="content container-fluid">
+            <div id="layout">
+                <div id="test-editormd-view">
+                    <textarea id="append-test" class="markdown-body" style="display:none;"
+                              th:text="${markdownContent}"></textarea>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+</div>
+</body>
+<!-- jQuery 3 -->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="dist/js/adminlte.min.js"></script>
+<!-- Editor Markdown -->
+<script src="bower_components/editormd/editormd.js"></script>
+<script src="bower_components/editormd/editormd.min.js"></script>
+<script src="bower_components/editormd/lib/marked.min.js"></script>
+<script src="bower_components/editormd/lib/prettify.min.js"></script>
+<script src="bower_components/editormd/lib/raphael.min.js"></script>
+<script src="bower_components/editormd/lib/underscore.min.js"></script>
+<script src="bower_components/editormd/lib/sequence-diagram.min.js"></script>
+<script src="bower_components/editormd/lib/flowchart.min.js"></script>
+<script src="bower_components/editormd/lib/jquery.flowchart.min.js"></script>
+<!-- Layer -->
+<script src="bower_components/layer/layer.js"></script>
+<script type="text/javascript">
+    $(function () {
+        doFindUserMenuList();
+        doFindMdMenuList();
+        doShowMarkDown();
+    })
+
+    //1.查询用户菜单
+    function doFindUserMenuList() {
+        var url = "doFindUserMenuList";
+        $.post(url, function (result) {
+            if (result.state == 1) {
+                doShowMenuUI(result.data);
+                //跳转页面
+                doLoadUI("load-user-id", "user/doUserListUI");
+                doLoadUI("load-role-id", "role/doRoleListUI");
+                doLoadUI("load-markdown-menu-id", "md_menu/doMdMenuListUI");
+                doHomeEditUI();
+            }
+        });
+    }
+
+    //2.显示菜单
+    function doShowMenuUI(menus) {
+        var menusUL = $("#menus");
+        var menuLI;
+        for (var i = 0; i < menus.length; i++) {
+            if (menus[i].parentId == 0) {
+                var exist = false;
+                for (var a = 0; a < menus.length; a++) {
+                    if (menus[i].menuId == menus[a].parentId) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (exist) {
+                    var treeMenuLI =
+                        "<li class='treeview'>" +
+                        "<a href='#'><i class='fa fa-link'></i>" +
+                        "<span>" + menus[i].menuName + "</span>" +
+                        "<span class='pull-right-container'>" +
+                        "<i class='fa fa-angle-left pull-right'></i>" +
+                        "</span>" +
+                        "</a>" +
+                        "<ul id='" + menus[i].permission + "-tree' class='treeview-menu'></ul>" +
+                        "</li>";
+                    menusUL.append(treeMenuLI);
+                    for (var a = 0; a < menus.length; a++) {
+                        if (menus[i].menuId == menus[a].parentId) {
+                            var treeMenuUL = $("#" + menus[i].permission + "-tree");
+                            menuLI = "<li><a id='load-" + menus[a].permission + "-id'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[a].menuName + "</a></li>";
+                            treeMenuUL.append(menuLI);
+                        }
+                    }
+                } else {
+                    menuLI = "<li><a id='load-" + menus[i].permission + "-id'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[i].menuName + "</a></li>";
+                    menusUL.append(menuLI);
+                }
+            }
+        }
+    }
+
+    //3.查询Markdown菜单
+    function doFindMdMenuList() {
+        var url = "doFindMdMenuList";
+        $.post(url, function (result) {
+            if (result.state == 1) {
+                doShowMdMenuUI(result.data);
+                $("#md_menus").on("click", ".open-markdown", doMoekdownUI);
+            }
+        });
+    }
+
+    //4.显示Markdown菜单
+    function doShowMdMenuUI(menus) {
+        var mdMenusUL = $("#md_menus");
+        var mdMenuLI;
+        for (var i = 0; i < menus.length; i++) {
+            if (menus[i].parentNum == 0) {
+                var exist = false;
+                for (var a = 0; a < menus.length; a++) {
+                    if (menus[i].menuNum == menus[a].parentNum) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (exist) {
+                    var treeMdMenuLI =
+                        "<li class='treeview'>" +
+                        "<a href='#'><i class='fa fa-link'></i>" +
+                        "<span>" + menus[i].menuName + "</span>" +
+                        "<span class='pull-right-container'>" +
+                        "<i class='fa fa-angle-left pull-right'></i>" +
+                        "</span>" +
+                        "</a>" +
+                        "<ul id='md" + menus[i].menuNum + "-tree' class='treeview-menu'></ul>" +
+                        "</li>";
+                    mdMenusUL.append(treeMdMenuLI);
+                    for (var a = 0; a < menus.length; a++) {
+                        if (menus[i].menuNum == menus[a].parentNum) {
+                            var treeMdMenuUL = $("#md" + menus[i].menuNum + "-tree");
+                            mdMenuLI = "<li><a id='" + menus[a].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[a].menuName + "</a></li>";
+                            treeMdMenuUL.append(mdMenuLI);
+                        }
+                    }
+                } else {
+                    mdMenuLI = "<li><a id='" + menus[i].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[i].menuName + "</a></li>";
+                    mdMenusUL.append(mdMenuLI);
+                }
+            }
+        }
+    }
+
+    function doMoekdownUI() {
+        var markdownId = $(this).attr('id');
+        var url = "markdown/doMarkdownUI?markdownId=" + markdownId;
+        $("#mainContentId").load(url, function () {
+            $("#mainContentId").removeData();
+        });
+    }
+
+    //页面跳转
+    function doLoadUI(id, url) {
+        $("#" + id).click(function () {
+            $("#mainContentId").load(url, function () {
+                $("#mainContentId").removeData();
+            });
+        });
+    }
+
+    //显示主页信息
+    function doShowMarkDown() {
+        var testEditormdView = editormd.markdownToHTML("test-editormd-view", {
+            htmlDecode: "style,script,iframe",  // you can filter tags decode
+            emoji: true,
+            taskList: true,
+            tex: true,  // 默认不解析
+            flowChart: true,  // 默认不解析
+            sequenceDiagram: true,  // 默认不解析
+        });
+    }
+
+    //首页编辑
+    function doHomeEditUI() {
+        $("#load-home-id").click(function () {
+            var fileName = $("#fileName").val();
+            $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
+                $("#mainContentId").removeData();
+                $("#mainContentId").data("fileName", fileName);
+            });
+        })
+    }
+
+    //修改密码页面
+    function doPasswordUI() {
+        $("#mainContentId").load("doPasswordUI", function () {
+            $("#mainContentId").removeData();
+        });
+    }
+
+    //console.log();
+    //alert();
+    //debugger;
+</script>
+</body>
+</html>
