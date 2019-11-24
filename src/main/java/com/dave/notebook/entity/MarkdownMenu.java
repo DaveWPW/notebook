@@ -3,12 +3,24 @@ package com.dave.notebook.entity;
 import java.util.Date;
 import javax.persistence.*;
 
-@Table(name = "nb_markdown")
-public class Markdown {
+@Table(name = "nb_markdown_menu")
+public class MarkdownMenu {
     @Id
+    @Column(name = "menu_id")
+    private Integer menuId;
+    @Column(name = "menu_num")
+    private Integer menuNum;
+    @Column(name = "menu_name")
+    private String menuName;
+    @Column(name = "parent_num")
+    private Integer parentNum;
+    @Transient
+    private String parentName;
+    @Column(name = "menu_type")
+    private Integer menuType;
     @Column(name = "markdown_id")
     private Integer markdownId;
-    @Column(name = "file_name")
+    @Transient
     private String fileName;
     @Column(name = "create_user")
     private String createUser;
@@ -18,6 +30,54 @@ public class Markdown {
     private String modifyUser;
     @Column(name = "modify_time")
     private Date modifyTime;
+
+    public Integer getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(Integer menuId) {
+        this.menuId = menuId;
+    }
+
+    public Integer getMenuNum() {
+        return menuNum;
+    }
+
+    public void setMenuNum(Integer menuNum) {
+        this.menuNum = menuNum;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public Integer getParentNum() {
+        return parentNum;
+    }
+
+    public void setParentNum(Integer parentNum) {
+        this.parentNum = parentNum;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
+    }
+
+    public Integer getMenuType() {
+        return menuType;
+    }
+
+    public void setMenuType(Integer menuType) {
+        this.menuType = menuType;
+    }
 
     public Integer getMarkdownId() {
         return markdownId;

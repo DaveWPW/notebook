@@ -4,7 +4,7 @@
     <div class="box">
       <!-- Box Header -->
 	  <div class="box-header">
-	    <h3 class="box-title">文档管理</h3>
+	    <h3 class="box-title">指南管理</h3>
 	    <!-- Box Tools -->
         <div class="box-tools">
 		  <div class="input-group input-group-sm" style="width: 100px;">
@@ -61,7 +61,7 @@ var columns = [
 },
 {
 	title : 'ID',
-	field : 'markdownId',
+	field : 'menuId',
 	valign : 'middle',
 	sortable : true
 },
@@ -142,9 +142,9 @@ function doLoadZtreeNodes(){
 function doLoadEditUI(){
 	var title;
 	if($(this).hasClass("btn-add")){
-		title="添加文档";
+		title="添加指南";
 	}else{
-		title="修改文档";
+		title="修改修改";
 		var input = $("tbody input[type='radio']:checked");
 		var tr = input.parents("tr");
 		var rowData = tr.data("rowData");

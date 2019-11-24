@@ -1,6 +1,7 @@
 package com.dave.notebook.service.impl;
 
 import com.dave.notebook.entity.Markdown;
+import com.dave.notebook.entity.MarkdownMenu;
 import com.dave.notebook.entity.Menu;
 import com.dave.notebook.mapper.MdMenuMapper;
 import com.dave.notebook.service.MdMenuService;
@@ -22,8 +23,8 @@ public class MdMenuServiceImpl implements MdMenuService {
     private MdMenuMapper mdMenuMapper;
 
     @Override
-    public List<Markdown> findMdMenuList(String username) {
-        List<Markdown> mdMenus = mdMenuMapper.findMdMenuList(username);
+    public List<MarkdownMenu> findMdMenuList(String username) {
+        List<MarkdownMenu> mdMenus = mdMenuMapper.findMdMenuList(username);
         return mdMenus;
     }
 
@@ -31,12 +32,6 @@ public class MdMenuServiceImpl implements MdMenuService {
     public List<Node> findZtreeMenuNodes(String username) {
         List<Node> zMdMenus = mdMenuMapper.findZtreeMenuNodes(username);
         return zMdMenus;
-    }
-
-    @Override
-    public String findFileNameByMarkdownId(String username, int markdownId) {
-        String fileName = mdMenuMapper.findFileNameByMarkdownId(username, markdownId);
-        return fileName;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.dave.notebook.controller;
 
 import com.dave.notebook.entity.Markdown;
+import com.dave.notebook.entity.MarkdownMenu;
 import com.dave.notebook.entity.Menu;
 import com.dave.notebook.entity.User;
 import com.dave.notebook.service.MdMenuService;
@@ -29,10 +30,10 @@ public class IndexController {
     private UserService userService;
 
     @Autowired
-    private MdMenuService mdMenuService;
+    private MenuService menuService;
 
     @Autowired
-    private MenuService menuService;
+    private MdMenuService mdMenuService;
 
     @RequestMapping(value = "doFindUserMenuList", method = RequestMethod.POST)
     public JsonResult doFindUserMenuList(){
@@ -44,7 +45,7 @@ public class IndexController {
     @RequestMapping(value = "doFindMdMenuList", method = RequestMethod.POST)
     public JsonResult doFindMdMenuList(){
         String username = ShiroUtil.getCurrentUser().getUsername();
-        List<Markdown> mdMenus = mdMenuService.findMdMenuList(username);
+        List<MarkdownMenu> mdMenus = mdMenuService.findMdMenuList(username);
         return new JsonResult(mdMenus);
     }
 

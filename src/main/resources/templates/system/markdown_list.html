@@ -2,9 +2,9 @@
   <div class="col-xs-12">
     <div class="box">
 	  <div class="box-header">
-		  <h3 class="box-title">用户管理</h3>
+		  <h3 class="box-title">文档管理</h3>
 		  <div class="box-button" style="float:right; border:2px solid #0088A8;">
-			  <input type="text" name="table_search" id="searchNameId" placeholder="请输入用户名"><button type="button" class="btn-search"><i class="fa fa-search"></i></button><button type="button" class="btn-add">添加</button>
+			  <input type="text" name="table_search" id="searchNameId" placeholder="请输入文件名"><button type="button" class="btn-search"><i class="fa fa-search"></i></button><button type="button" class="btn-add">添加</button>
 		  </div>
 	  </div>
 	  <!-- /.box-header -->
@@ -13,11 +13,9 @@
 	      <thead>
 		    <tr>
 		      <th style="width:5%;">No.</th>
-			  <th>用户名</th>
-			  <th>真实名</th>
-			  <th>角色</th>
+			  <th>文件名</th>
 			  <th>创建用户</th>
-			  <th>修改用户</th>
+			  <th>创建时间</th>
 			  <th style="width:120px;">操作</th>
 		    </tr>
 		  </thead>
@@ -38,28 +36,28 @@
 		});
 		$(".box-button")
 				.on("click",".btn-add", doLoadEditUI)
-				.on("click",".btn-search", doQueryUser);
+				.on("click",".btn-search", doQueryMarkdown);
 		$("#tbodyId")
 				.on("click", ".btn-update", doLoadEditUI)
-				.on("click", ".btn-delete", doDeleteUser);
+				.on("click", ".btn-delete", doDeleteMarkdown);
 	});
-	//查询用户
-	function doQueryUser(){
+	//根据文件名查询文档
+	function doQueryMarkdown(){
 		$("#pageId").data("pageCurrent", 1);
 		doGetObjects();
 	}
 	//获取页面数据
 	function doGetObjects(){
-		var url = "user/doFindUserList";
+		var url = "markdown/doFindMarkdownList";
 		var pageCurrent = $("#pageId").data("pageCurrent");
 		if(!pageCurrent){
 			pageCurrent = 1;
 			$("#pageId").data("pageCurrent", 1);
 		}
 		var params = {"pageCurrent" : pageCurrent}
-		var username = $("#searchNameId").val().trim();
-		if(username){
-			params.username = username;
+		var fileName = $("#searchNameId").val().trim();
+		if(fileName){
+			params.fileName = fileName;
 		}
 		$.getJSON(url, params, function(result){
 			doHandleResponseResult(result);
@@ -78,7 +76,7 @@
 		if(data.length > 0){
 			for(var i in data){
 				var tr = $("<tr></tr>");
-				tr.data("userId", data[i].userId);
+				tr.data("markdownId", data[i].markdownId);
 				var tds = doCreateTds(data[i]);
 				tr.append(tds);
 				tBody.append(tr);
@@ -88,11 +86,9 @@
 	function doCreateTds(row){
 		var tds =
 			"<td><span class='numberClass'></span></td>"+
-			"<td>"+row.username+"</td>"+
-			"<td>"+row.realname+"</td>"+
-			"<td>"+row.roleId+"</td>"+
+			"<td>"+row.fileName+"</td>"+
 			"<td>"+row.createUser+"</td>"+
-			"<td>"+row.modifyUser+"</td>"+
+			"<td>"+row.createTime+"</td>"+
 			"<td><a class='btn-delete'>Delete&nbsp;|&nbsp;<a class='btn-update'>Update</a></td>";
 		return tds;
 	}
@@ -110,43 +106,32 @@
 		number();
 	}
 	//=====================================
-	//添加和修改用户
+	//添加和修改文档
 	function doLoadEditUI(){
-		var title;
 		if($(this).hasClass("btn-add")){
-			title = "添加用户";
-			doLoadPage(title);
+			doLoadPage();
 		}else if($(this).hasClass("btn-update")){
-			title = "修改用户";
-			var userId = $(this).parents("tr").data("userId");
-			doFindObjectById(userId, title);
+			var markdownId = $(this).parents("tr").data("markdownId");
+			var fileName = $(this).parents("tr").find("td").eq(1).html();
+			$("#mainContentId").data("markdownId", markdownId);
+			$("#mainContentId").data("fileName", fileName);
+			doLoadPage();
 		}
 	}
-	function doFindObjectById(userId, title){
-		var params = {"userId" : userId};
-		var url="user/doFindUserById";
-		$.getJSON(url, params, function(result){
-			if(result.state == 1){
-				$("#mainContentId").data("rowData", result.data);
-				doLoadPage(title);
-			}else{
-				alert(result.message);
-			}
-		});
-	}
-	function doLoadPage(title){
-		var url="user/doUserEditUI"
-		$("#mainContentId").load(url,function(){
-			$(".box-title").html(title);
-		})
+	function doLoadPage() {
+		$("#mainContentId").load("markdown/doMarkdownEditUI");
 	}
 	//==========================================
-	//删除用户
-	function doDeleteUser(){
+	//删除文档
+	function doDeleteMarkdown(){
 		if(window.confirm("您确定要删除吗？")){
-			var userId = $(this).parents("tr").data("userId");
-			var params = {"userId" : userId};
-			var url="user/doDeleteUser";
+			var markdownId = $(this).parents("tr").data("markdownId");
+			var fileName = $(this).parents("tr").find("td").eq(1).html();
+			var params = {
+				"markdownId" : markdownId,
+				"fileName" : fileName
+			};
+			var url="markdown/doDeleteMarkdown";
 			$.getJSON(url, params, function(result){
 				if(result.state == 1){
 					doGetObjects();
@@ -157,5 +142,8 @@
 			});
 		}
 	}
+	//console.log();
+	//alert();
+	//debugger;
 </script>
 <!-- /.row -->

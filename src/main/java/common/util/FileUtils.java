@@ -152,5 +152,20 @@ public class FileUtils {
 			}
 		}
 	}
-	
+
+	public static boolean deleteMarkdownFile(String username, String fileName) {
+		File file = new File("D:/markdown/"+username+"/"+fileName+".md");
+		if (file.exists() && file.isFile()) {
+			if (file.delete()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+
+
+
 }

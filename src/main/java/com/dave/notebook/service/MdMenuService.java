@@ -1,6 +1,7 @@
 package com.dave.notebook.service;
 
 import com.dave.notebook.entity.Markdown;
+import com.dave.notebook.entity.MarkdownMenu;
 import common.vo.Node;
 
 import java.util.List;
@@ -12,10 +13,8 @@ import java.util.List;
  */
 public interface MdMenuService {
 
-    List<Markdown> findMdMenuList(String username);
+    List<MarkdownMenu> findMdMenuList(String username);
 
     List<Node> findZtreeMenuNodes(String username);
-
-    String findFileNameByMarkdownId(String username, int markdownId);
 
 }

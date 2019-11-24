@@ -1,19 +1,19 @@
 <div id="layout">
-    <form action="markdown/doAddMarkdown" method="post">
-        <div style="display: none; margin:0px 5px 5px 0px;" id="markdownName">
-            <input type="text" name="markdownName" class="markdown-name">.md
-        </div>
-        <div id="test-editormd">
-            <textarea style="display:none;" id="markdownContent" name="markdownContent"></textarea>
-        </div>
-        <button type="submit" class="btn btn-info col-md-offset-3 col-md-6">保存
-        </button>
-    </form>
+    <div style="display: none; margin:0px 5px 5px 0px;" id="markdownName">
+        <input type="text" name="markdownName" class="markdown-name">.md
+    </div>
+    <div id="markdownEditor">
+        <textarea style="display:none;" id="markdownContent" name="markdownContent"></textarea>
+    </div>
+    <button type="submit" class="btn btn-info btn-save col-md-offset-3 col-md-6">保存
+    </button>
+    <!--<form action="markdown/doAddMarkdown" method="post">
+    </form>-->
 </div>
 <script type="text/javascript">
     var testEditor;
     $(function () {
-        testEditor = editormd("test-editormd", {
+        testEditor = editormd("markdownEditor", {
             width: "100%",
             height: 500,
             syncScrolling: "single",
@@ -22,7 +22,13 @@
             imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
             imageUploadURL: "markdown/doImageUpload",
         });
-        $("#test-editormd").on("click", ".editormd-preview-close-btn", doCancel);
+        $("#markdownEditor")
+                .on("click", ".editormd-preview-close-btn", doCancel);
+        $("#layout")
+                .on("click", ".btn-save", doSaveOrUpdateMarkdown);
+        doGetMarkdownData();
+    });
+    function doGetMarkdownData() {
         var fileName = $("#mainContentId").data("fileName");
         if (fileName != "README") {
             $("#markdownName").show();
@@ -34,18 +40,47 @@
             if (result.state == 1) {
                 $("#markdownContent").val(result.data);
                 $("#markdownName").find("input").val(fileName);
-                $("#mainContentId").removeData("fileName");
+                //$("#mainContentId").removeData("fileName");
             } else {
                 alert("获取" + fileName + ".md内容失败！！");
             }
         });
-    });
+    }
+    function doSaveOrUpdateMarkdown() {
+        var fileName = $(".markdown-name").val();
+        var markdownContent = $("#markdownContent").val();
+        var params = {
+            fileName : fileName,
+            markdownContent : markdownContent
+        }
+        var markdownId = $("#mainContentId").data("markdownId");
+        var url;
+        if(markdownId){
+            url = "markdown/doUpdateMarkdown";
+            var oldFileName = $("#mainContentId").data("fileName");
+            params.markdownId = markdownId;
+            params.oldFileName = oldFileName;
+        }else{
+            url = "markdown/doAddMarkdown";
+        }
+        $.post(url, params, function (result) {
+            if (result.state == 1) {
+                alert(result.message);
+                doCancel();
+            } else {
+                alert(result.message);
+            }
+        });
+
+    }
     function doCancel() {
         var fileName = $(".markdown-name").val();
-        console.log(fileName);
         if(fileName != "README"){
-            $("#mainContentId").load("md_menu/doMdMenuEditUI");
+            $("#mainContentId").load("markdown/doMarkdownListUI", function () {
+                $("#mainContentId").removeData();
+            });
         }else{
+            $("#mainContentId").removeData();
             window.location.href = "doIndexUI";
         }
     }

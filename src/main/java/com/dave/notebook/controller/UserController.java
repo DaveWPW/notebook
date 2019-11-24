@@ -87,7 +87,7 @@ public class UserController {
      */
     @RequestMapping("doFindUserList")
     @ResponseBody
-    public JsonResult doFindUserList(Integer pageCurrent, String username, String staffId){
+    public JsonResult doFindUserList(Integer pageCurrent, String username){
     	if(pageCurrent == null || pageCurrent <= 0) {
     		return new JsonResult("参数不合法");
     	}

@@ -1,6 +1,7 @@
 package com.dave.notebook.controller;
 
 import com.dave.notebook.entity.Markdown;
+import com.dave.notebook.entity.MarkdownMenu;
 import com.dave.notebook.service.MdMenuService;
 import common.util.ShiroUtil;
 import common.vo.JsonResult;
@@ -38,7 +39,7 @@ public class MdMenuController {
     @ResponseBody
     public JsonResult doFindMdMenuList(){
         String username = ShiroUtil.getCurrentUser().getUsername();
-        List<Markdown> mdMenus = mdMenuService.findMdMenuList(username);
+        List<MarkdownMenu> mdMenus = mdMenuService.findMdMenuList(username);
         return new JsonResult(mdMenus);
     }
 
