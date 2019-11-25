@@ -57,6 +57,3 @@ mybatis:
 logging:
   level:
     com.ming.ssm.mapper: debug
-
-preread:
-  uploadPath: D:/
