@@ -10,9 +10,15 @@
                 <label for="menu-type-id" class="col-sm-2 control-label">类型：</label>
                 <div class="col-sm-10 typeRadio">
                     <label class="radio-inline">
-                        <input type="radio" name="typeId" value="1" onclick="doChangePage(1)">菜单</label>
+                        <input type="radio" name="typeId" value="1" onclick="doChangePage(1)" checked>菜单</label>
                     <label class="radio-inline">
-                        <input type="radio" name="typeId" value="2" onclick="doChangePage(2)" checked>文档</label>
+                        <input type="radio" name="typeId" value="2" onclick="doChangePage(2)">文档</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="menu-name-id" class="col-sm-2 control-label">菜单编号：</label>
+                <div class="col-sm-10" style="width:100px;">
+                    <input type="text" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="10" class="form-control" id="menu-num-id" placeholder="编号">
                 </div>
             </div>
             <div class="form-group">
@@ -30,9 +36,8 @@
             </div>
             <div class="form-group" id="markdown-id">
                 <label for="file-name-id" class="col-sm-2 control-label">文档：</label>
-                <div class="col-sm-10" style="width:300px;">
-                    <button type="button" class="btn-add-markdown">编辑文档</button>
-                    <span id="file-name-id"></span>
+                <div class="col-sm-10" style="width:150px;">
+                    <select id="mrakdownId" class="form-control"></select>
                 </div>
             </div>
         </div>
@@ -79,29 +84,48 @@
     $(function () {
         doInitPageData();
         $("#mainContentId")
-            .on("click", ".load-sys-menu", doLoadZtreeNodes);
+                .on("click", ".load-sys-menu", doLoadZtreeNodes);
         //ztree的确定(btn-confirm)和取消(btn-cancel)按钮上进行事件注册
         $("#menuLayer")
-            .on("click", ".btn-confirm", doSetSelectNode)
-            .on("click", ".btn-cancel", doHideTree);
-        $(".box-body").on("click", ".btn-add-markdown", doMarkdownEditUI);
+                .on("click", ".btn-confirm", doSetSelectNode)
+                .on("click", ".btn-cancel", doHideTree);
         //表单保存和取消按钮事件注册
         $(".box-footer")
-            .on("click", ".btn-save", doSaveOrUpdate)
-            .on("click", ".btn-cancel", doCancel);
+                .on("click", ".btn-save", doSaveOrUpdate)
+                .on("click", ".btn-cancel", doCancel);
+
     });
 
     function doInitPageData() {
         //假如是修改则初始化页面数据
         var rowData = $("#mainContentId").data("rowData");
-        if (rowData) {
+        if(rowData){
             doInitEditFormData(rowData);
+        }else{
+            doChangePage(1);
+        }
+        var url = "markdown/doFindMarkdownListName"
+        $.getJSON(url, function(result){
+            if(result.state == 1){
+                doInitPageMarkdownList(result.data);
+            }else{
+                alert(result.message);
+            }
+        });
+    }
+    function doInitPageMarkdownList(data){
+        var select = $("#mrakdownId");
+        select.empty();
+        for(var i in data){
+            var option = "<option value='"+data[i].markdownId+"'>"+data[i].fileName+"</option>";
+            select.append(option);
         }
     }
 
     //初始化表单数据
     function doInitEditFormData(rowData) {
         $(".typeRadio input[value='" + rowData.menuType + "']").prop("checked", true);
+        $("#menu-num-id").val(rowData.menuNum);
         $("#menu-name-id").val(rowData.menuName);
         $("#parent-num-id").val(rowData.parentName);
         $("#parent-num-id").data("parentNum", rowData.parentNum);
@@ -113,7 +137,6 @@
         $("#menuLayer").css("display", "block");
         var url = "md_menu/doFindZtreeMenuNodes";
         $.getJSON(url, function (result) {
-            console.log(result);
             if (result.state == 1) {
                 zTree = $.fn.zTree.init($("#menuTree"), setting, result.data);
             } else {
@@ -125,9 +148,7 @@
     //设置选中的菜单节点
     function doSetSelectNode() {
         //1.获取选中的树节点(node)对象.
-        console.log(zTree);
         var nodes = zTree.getSelectedNodes();
-        console.log(nodes);
         if (nodes.length == 0) {
             doHideTree();
             return;
@@ -137,7 +158,7 @@
         $("#parent-num-id").val(nodes[0].name);
         //2.2 节点id (进行绑定,此值最后要存储到数据库)
         $("#parent-num-id").data("parentNum", nodes[0].id);
-        console.log("id=" + nodes[0].id);
+        console.log("parentNum = " + nodes[0].id);
         //3.隐藏zTree对象
         doHideTree();
     }
@@ -156,28 +177,15 @@
         }
     }
 
-    function doMarkdownEditUI() {
-        var fileName = $("#file-name-id").html();
-        $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
-            //$("#mainContentId").removeData();
-            $("#mainContentId").data("fileName", fileName);
-        });
-    }
-
-
     //保存或更新数据
     function doSaveOrUpdate() {
-        //1.获取页面表单数据
         var params = doGetEditFormData();
         var rowData = $("#mainContentId").data("rowData");
-        //只有更新操作rowData才会有值
-        if (rowData) params.id = rowData.id;//基于id进行记录更新
-        //2.异步提交表单数据
-        var insertUrl = "menu/doSaveObject.do";
-        var updateUrl = "menu/doUpdateObject.do";
-        //rowData有值说明是更新操作
+        if (rowData) params.menuId = rowData.menuId;
+        var insertUrl = "md_menu/doAddMdMemu";
+        var updateUrl = "md_menu/doUpdateMdMemu";
         var url = rowData ? updateUrl : insertUrl;
-        console.log(params);//
+        console.log(params);
         $.post(url, params, function (result) {
             if (result.state == 1) {
                 alert(result.message);
@@ -190,13 +198,14 @@
 
     function doGetEditFormData() {
         var params = {
-            type: $(".typeRadio input[type='radio']:checked").val(),
-            name: $("#nameId").val(),
-            url: $("#urlId").val(),
-            sort: $("#sortId").val(),
-            permission: $("#permissionId").val(),
-            parentId: $("#parentId").data("parentId")
+            menuType : $(".typeRadio input[type='radio']:checked").val(),
+            menuNum : $("#menu-num-id").val(),
+            menuName : $("#menu-name-id").val(),
+            parentNum : $("#parent-num-id").data("parentNum")
         };
+        if($(".typeRadio input[type='radio']:checked").val() == 2){
+            params.markdownId = $("#mrakdownId").val();
+        }
         return params;
     }
 

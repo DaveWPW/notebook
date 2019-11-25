@@ -17,4 +17,7 @@ public interface MdMenuService {
 
     List<Node> findZtreeMenuNodes(String username);
 
+    int addMdMenu(String username, MarkdownMenu markdownMenu);
+
+    int updateMdMem(String username, MarkdownMenu markdownMenu);
 }

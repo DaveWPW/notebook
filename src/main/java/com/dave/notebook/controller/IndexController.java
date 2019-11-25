@@ -7,7 +7,6 @@ import com.dave.notebook.entity.User;
 import com.dave.notebook.service.MdMenuService;
 import com.dave.notebook.service.MenuService;
 import com.dave.notebook.service.UserService;
-import common.util.FileUtils;
 import common.util.ShiroUtil;
 import common.vo.JsonResult;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -36,14 +35,14 @@ public class IndexController {
     @Autowired
     private MdMenuService mdMenuService;
 
-    @RequestMapping(value = "doFindUserMenuList", method = RequestMethod.POST)
+    @PostMapping("doFindUserMenuList")
     public JsonResult doFindUserMenuList(){
         int roleId = ShiroUtil.getCurrentUser().getRoleId();
         List<Menu> menus = menuService.findUserMenuList(roleId);
         return new JsonResult(menus);
     }
 
-    @RequestMapping(value = "doFindMdMenuList", method = RequestMethod.POST)
+    @PostMapping("doFindMdMenuList")
     public JsonResult doFindMdMenuList(){
         String username = ShiroUtil.getCurrentUser().getUsername();
         List<MarkdownMenu> mdMenus = mdMenuService.findMdMenuList(username);
@@ -57,7 +56,7 @@ public class IndexController {
      * @param newPassword
      * @return
      */
-    @RequestMapping("doUpdatePassword")
+    @PostMapping("doUpdatePassword")
     public JsonResult doUpdatePassword(String oldPassword, String newPassword){
         if(StringUtils.isEmpty(oldPassword)) {
             return new JsonResult("旧密码不能为空");

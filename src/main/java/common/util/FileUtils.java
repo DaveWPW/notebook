@@ -1,17 +1,11 @@
 package common.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.util.UUID;
-
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.UUID;
 
 public class FileUtils {
 	
@@ -22,20 +16,29 @@ public class FileUtils {
 	 * @param path
 	 * @return
 	 */
-    public static String upload(MultipartFile file, String path) {
-        String fileName = file.getOriginalFilename();
-        fileName = UUID.randomUUID() + fileName.substring(fileName.indexOf("."), fileName.length());
-        File targetFile = new File(path, fileName);  
-        if(!targetFile.exists()){  
-            targetFile.mkdirs();  
-        }
-        try {  
-            file.transferTo(targetFile);//保存
-        } catch (Exception e) {  
-            e.printStackTrace();  
-        } 
-        return fileName;
-    }
+    public static String uploadImageFile(MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=UTF-8");
+		//文件存放的路径
+		String path = request.getSession().getServletContext().getRealPath("upload/images");
+		//获取文件名
+		String fileName = file.getOriginalFilename();
+		//文件重命名
+		fileName = UUID.randomUUID() + fileName.substring(fileName.indexOf("."), fileName.length());
+		File targetFile = new File(path, fileName);
+		//是否存在
+		if(!targetFile.exists()){
+			//创建目录
+			targetFile.mkdirs();
+		}
+		try {
+			file.transferTo(targetFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String url = request.getScheme() + "://" + request.getServerName() + request.getContextPath() + "/upload/images/" + fileName;
+		return url;
+	}
 
     /**
      * 上传MarkDown文件
@@ -44,15 +47,17 @@ public class FileUtils {
      * @param data
      * @return
      */
-    public static boolean exportMarkDown(String username, String fileName, String data) {
+    public static boolean uploadMarkDownFile(String username, String fileName, String data) {
     	File file = new File("D:/markdown/"+username+"/"+fileName+".md");
 		try {
-			if(!file.exists()){//是否存在
-				file.createNewFile();//创建文件
+			//是否存在
+			if(!file.exists()){
+				//创建文件
+				file.createNewFile();
 			}
 			FileOutputStream fileOutputStream = null;
 			fileOutputStream = new FileOutputStream(file);
-			return exportMarkDownByOutputStream(fileOutputStream, data);
+			return uploadOutputStream(fileOutputStream, data);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -66,7 +71,7 @@ public class FileUtils {
      * @param data
      * @return
      */
-    public static boolean exportMarkDownByOutputStream(OutputStream outputStream, String data) {
+    public static boolean uploadOutputStream(OutputStream outputStream, String data) {
 		boolean isSucess = false;
 		OutputStreamWriter outputStreamWriter = null;
 		BufferedWriter bufferedWriter = null;
@@ -114,7 +119,7 @@ public class FileUtils {
 	 * @param fileName
 	 * @return
 	 */
-	public static String getFileData(String username, String fileName) {
+	public static String getMarkdownFile(String username, String fileName) {
 		File file = new File("D:/markdown/"+username+"/"+fileName+".md");
         if(!file.isFile()) {
         	return null;
@@ -126,7 +131,8 @@ public class FileUtils {
         	bufferedReader = new BufferedReader(inputStreamReader);
         	String text = "";
         	String line;
-        	while((line = bufferedReader.readLine()) != null) {//包含该行内容的字符串，不包含任何行终止符，如果已到达流末尾，则返回 null
+			//包含该行内容的字符串，不包含任何行终止符，如果已到达流末尾，则返回 null
+        	while((line = bufferedReader.readLine()) != null) {
                 text = text + line + "\r\n";
             }
         	return text;

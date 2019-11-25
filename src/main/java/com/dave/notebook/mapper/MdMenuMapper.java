@@ -1,8 +1,6 @@
 package com.dave.notebook.mapper;
 
-import com.dave.notebook.entity.Markdown;
 import com.dave.notebook.entity.MarkdownMenu;
-import com.dave.notebook.entity.Menu;
 import common.tk.mybatis.MyMapper;
 import common.vo.Node;
 import org.apache.ibatis.annotations.Param;
@@ -10,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-public interface MdMenuMapper extends MyMapper<Markdown> {
+public interface MdMenuMapper extends MyMapper<MarkdownMenu> {
 
     @Select("select menu_num as id, menu_name as name, parent_num as parent_id from nb_markdown_menu where create_user = #{username}")
     List<Node> findZtreeMenuNodes(@Param("username")String username);

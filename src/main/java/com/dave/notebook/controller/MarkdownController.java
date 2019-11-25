@@ -4,20 +4,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.dave.notebook.entity.Markdown;
 import com.dave.notebook.service.MarkdownService;
 import com.github.pagehelper.PageInfo;
-import common.util.FileUtils;
 import common.util.ShiroUtil;
 import common.vo.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * @Author: Dave
@@ -38,10 +37,10 @@ public class MarkdownController {
         return new JsonResult(markdownPage);
     }
 
-    @RequestMapping("doGetMarkdownData")
-    public JsonResult doGetMarkdownData(String fileName){
+    @RequestMapping("doGetMarkdownFile")
+    public JsonResult doGetMarkdownFile(String fileName){
         String username = ShiroUtil.getCurrentUser().getUsername();
-        String markdownContent = FileUtils.getFileData(username, fileName);
+        String markdownContent = markdownService.getMarkdownFile(username, fileName);
         JsonResult json = new JsonResult();
         json.setData(markdownContent);
         json.setState(1);
@@ -58,17 +57,12 @@ public class MarkdownController {
         if(count > 0){
             return new JsonResult("文件名已存在！！");
         }
-        FileUtils.exportMarkDown(username, fileName, markdownContent);
-        int rows = markdownService.addMaekdown(username, fileName);
-        JsonResult json = new JsonResult();
-        if(rows == 1){
-            json.setState(1);
-            json.setMessage("添加成功！！");
+        int row = markdownService.addMaekdown(username, fileName, markdownContent);
+        if(row == 1){
+            return new JsonResult("添加成功！！", 1);
         }else{
-            json.setState(0);
-            json.setMessage("添加失败！！");
+            return new JsonResult("添加失败！！");
         }
-        return json;
     }
 
     @RequestMapping("doUpdateMarkdown")
@@ -83,13 +77,7 @@ public class MarkdownController {
                 return new JsonResult("文件名已存在！！");
             }
         }
-        int row = 0;
-        if(FileUtils.deleteMarkdownFile(username, oldFileName)){
-            FileUtils.exportMarkDown(username, fileName, markdownContent);
-            row = markdownService.updateMaekdown(markdownId, fileName);
-        }else{
-            return new JsonResult("删除文件失败！！");
-        }
+        int row = markdownService.updateMaekdown(username, fileName, oldFileName, markdownContent, markdownId);
         if(row == 1){
             return new JsonResult("修改成功！！", 1);
         }
@@ -99,29 +87,21 @@ public class MarkdownController {
     @RequestMapping("doDeleteMarkdown")
     public JsonResult doDeleteMarkdown(Integer markdownId, String fileName){
         String username = ShiroUtil.getCurrentUser().getUsername();
-        if(!FileUtils.deleteMarkdownFile(username, fileName)){
-            return new JsonResult("删除文件失败！！");
-        }
-        int row = markdownService.deleteMarkdown(markdownId);
+        int row = markdownService.deleteMarkdown(markdownId, username, fileName);
         if(row == 1){
             return new JsonResult("删除成功！！", 1);
         }
         return new JsonResult("删除失败！！");
     }
 
-    @RequestMapping("doImageUpload")
-    public void doImageUpload(@RequestParam(value = "editormd-image-file", required = true) MultipartFile file,
+    @RequestMapping("doImageUploadFile")
+    public void doUploadImageFile(@RequestParam(value = "editormd-image-file", required = true) MultipartFile file,
                               HttpServletRequest request, HttpServletResponse response){
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter wirte = null;
+        String url = markdownService.uploadImageFile(file, request, response);
         JSONObject json = new JSONObject();
+        PrintWriter wirte = null;
         try {
             wirte = response.getWriter();
-            //文件存放的路径
-            String path = request.getSession().getServletContext().getRealPath("upload");
-            String url = "http://localhost:8080" + request.getContextPath() + "/upload/"
-                    + FileUtils.upload(file, path);
             json.put("success", 1);
             json.put("message", "hello");
             json.put("url", url);
@@ -131,6 +111,13 @@ public class MarkdownController {
             wirte.flush();
             wirte.close();
         }
+    }
+
+    @RequestMapping("doFindMarkdownListName")
+    public JsonResult doFindMarkdownListName(){
+        String username = ShiroUtil.getCurrentUser().getUsername();
+        List<Markdown> markdownList =  markdownService.findMarkdownListName(username);
+        return new JsonResult(markdownList);
     }
 
 }

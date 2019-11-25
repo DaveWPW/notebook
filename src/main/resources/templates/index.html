@@ -244,7 +244,7 @@
 
     function doMoekdownUI() {
         var markdownId = $(this).attr('id');
-        var url = "markdown/doMarkdownUI?markdownId=" + markdownId;
+        var url = "doMarkdownUI?markdownId=" + markdownId;
         $("#mainContentId").load(url, function () {
             $("#mainContentId").removeData();
         });

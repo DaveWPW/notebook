@@ -38,4 +38,26 @@ public class MdMenuController {
         return new JsonResult(zMdMenus);
     }
 
+    @RequestMapping("doAddMdMemu")
+    public JsonResult doAddMdMemu(MarkdownMenu markdownMenu){
+        String username = ShiroUtil.getCurrentUser().getUsername();
+        int row = mdMenuService.addMdMenu(username, markdownMenu);
+        if(row == 1){
+            return new JsonResult("添加成功！！", 1);
+        }else{
+            return new JsonResult("添加失败！！");
+        }
+    }
+
+    @RequestMapping("doUpdateMdMemu")
+    public JsonResult doUpdateMdMemu(MarkdownMenu markdownMenu){
+        String username = ShiroUtil.getCurrentUser().getUsername();
+        int row = mdMenuService.updateMdMem(username, markdownMenu);
+        if(row == 1){
+            return new JsonResult("修改成功！！", 1);
+        }else{
+            return new JsonResult("修改失败！！");
+        }
+    }
+
 }

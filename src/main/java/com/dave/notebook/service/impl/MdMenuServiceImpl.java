@@ -9,6 +9,7 @@ import common.vo.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,24 @@ public class MdMenuServiceImpl implements MdMenuService {
     public List<Node> findZtreeMenuNodes(String username) {
         List<Node> zMdMenus = mdMenuMapper.findZtreeMenuNodes(username);
         return zMdMenus;
+    }
+
+    @Override
+    public int addMdMenu(String username, MarkdownMenu markdownMenu) {
+        markdownMenu.setCreateUser(username);
+        markdownMenu.setCreateTime(new Date());
+        markdownMenu.setModifyUser(username);
+        markdownMenu.setModifyTime(new Date());
+        int insert = mdMenuMapper.insert(markdownMenu);
+        return insert;
+    }
+
+    @Override
+    public int updateMdMem(String username, MarkdownMenu markdownMenu) {
+        markdownMenu.setModifyUser(username);
+        markdownMenu.setModifyTime(new Date());
+        int update = mdMenuMapper.updateByPrimaryKeySelective(markdownMenu);
+        return update;
     }
 
 }

@@ -2,6 +2,11 @@ package com.dave.notebook.service;
 
 import com.dave.notebook.entity.Markdown;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @Author: Dave
@@ -10,16 +15,21 @@ import com.github.pagehelper.PageInfo;
  */
 public interface MarkdownService {
 
-    PageInfo<Markdown> findMarkdownList(int pageCurrent, String username, String fileName);
+    PageInfo<Markdown> findMarkdownList(Integer pageCurrent, String username, String fileName);
 
-    String findFileNameByMarkdownId(String username, int markdownId);
+    String getMarkdownFile(String username, String fileName);
 
     int selectFileName(String username, String fileName);
 
-    int addMaekdown(String username, String fileName);
+    int addMaekdown(String username, String fileName, String markdownContent);
 
-    int updateMaekdown(int markdownId, String fileName);
+    int updateMaekdown(String username, String fileName, String oldFileName, String markdownContent, Integer markdownId);
 
-    int deleteMarkdown(Integer markdownId);
+    int deleteMarkdown(Integer markdownId, String username, String fileName);
 
+    String findMarkdownById(String username, Integer markdownId);
+
+    String uploadImageFile(MultipartFile file, HttpServletRequest request, HttpServletResponse response);
+
+    List<Markdown> findMarkdownListName(String username);
 }

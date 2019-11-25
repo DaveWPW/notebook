@@ -20,27 +20,26 @@
             path: "bower_components/editormd/lib/",
             imageUpload: true,
             imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-            imageUploadURL: "markdown/doImageUpload",
+            imageUploadURL: "markdown/doImageUploadFile",
         });
         $("#markdownEditor")
                 .on("click", ".editormd-preview-close-btn", doCancel);
         $("#layout")
                 .on("click", ".btn-save", doSaveOrUpdateMarkdown);
-        doGetMarkdownData();
+        doGetMarkdownFile();
     });
-    function doGetMarkdownData() {
+    function doGetMarkdownFile() {
         var fileName = $("#mainContentId").data("fileName");
         if (fileName != "README") {
             $("#markdownName").show();
             $(".markdown-name").val(fileName);
         }
-        var url = "markdown/doGetMarkdownData";
+        var url = "markdown/doGetMarkdownFile";
         var params = {"fileName": fileName}
         $.post(url, params, function (result) {
             if (result.state == 1) {
                 $("#markdownContent").val(result.data);
                 $("#markdownName").find("input").val(fileName);
-                //$("#mainContentId").removeData("fileName");
             } else {
                 alert("获取" + fileName + ".md内容失败！！");
             }
