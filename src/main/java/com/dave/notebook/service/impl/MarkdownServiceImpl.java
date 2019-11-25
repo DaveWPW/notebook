@@ -82,7 +82,9 @@ public class MarkdownServiceImpl implements MarkdownService {
             if(add){
                 Markdown markdown = new Markdown();
                 markdown.setMarkdownId(markdownId);
-                markdown.setFileName(fileName);
+                if(!fileName.equals(oldFileName)){
+                    markdown.setFileName(fileName);
+                }
                 markdown.setModifyUser(username);
                 markdown.setModifyTime(new Date());
                 update = markdownMapper.updateByPrimaryKeySelective(markdown);
@@ -112,8 +114,8 @@ public class MarkdownServiceImpl implements MarkdownService {
     }
 
     @Override
-    public String uploadImageFile(MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
-        String url = FileUtils.uploadImageFile(file, request, response);
+    public String uploadImageFile(String username, MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+        String url = FileUtils.uploadImageFile(username, file, request, response);
         return url;
     }
 

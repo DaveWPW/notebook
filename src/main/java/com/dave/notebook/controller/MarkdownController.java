@@ -97,7 +97,8 @@ public class MarkdownController {
     @RequestMapping("doImageUploadFile")
     public void doUploadImageFile(@RequestParam(value = "editormd-image-file", required = true) MultipartFile file,
                               HttpServletRequest request, HttpServletResponse response){
-        String url = markdownService.uploadImageFile(file, request, response);
+        String username = ShiroUtil.getCurrentUser().getUsername();
+        String url = markdownService.uploadImageFile(username, file, request, response);
         JSONObject json = new JSONObject();
         PrintWriter wirte = null;
         try {

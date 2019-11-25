@@ -16,11 +16,11 @@ public class FileUtils {
 	 * @param path
 	 * @return
 	 */
-    public static String uploadImageFile(MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+    public static String uploadImageFile(String username, MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
 		//文件存放的路径
-		String path = request.getSession().getServletContext().getRealPath("upload/images");
+		String path = request.getSession().getServletContext().getRealPath("notebook/upload/"+username+"/images");
 		//获取文件名
 		String fileName = file.getOriginalFilename();
 		//文件重命名
@@ -36,7 +36,7 @@ public class FileUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String url = request.getScheme() + "://" + request.getServerName() + request.getContextPath() + "/upload/images/" + fileName;
+		String url = request.getScheme() + "://" + request.getServerName() + request.getContextPath() + "/notebook/upload/"+username+"/images/" + fileName;
 		return url;
 	}
 
@@ -48,7 +48,7 @@ public class FileUtils {
      * @return
      */
     public static boolean uploadMarkDownFile(String username, String fileName, String data) {
-    	File file = new File("D:/markdown/"+username+"/"+fileName+".md");
+    	File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
 		try {
 			//是否存在
 			if(!file.exists()){
@@ -120,7 +120,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String getMarkdownFile(String username, String fileName) {
-		File file = new File("D:/markdown/"+username+"/"+fileName+".md");
+		File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
         if(!file.isFile()) {
         	return null;
         }
@@ -160,7 +160,7 @@ public class FileUtils {
 	}
 
 	public static boolean deleteMarkdownFile(String username, String fileName) {
-		File file = new File("D:/markdown/"+username+"/"+fileName+".md");
+		File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
 		if (file.exists() && file.isFile()) {
 			if (file.delete()) {
 				return true;
