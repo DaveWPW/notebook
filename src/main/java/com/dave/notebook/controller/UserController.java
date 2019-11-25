@@ -1,16 +1,15 @@
 package com.dave.notebook.controller;
 
-import common.util.ShiroUtil;
-import common.vo.JsonResult;
 import com.dave.notebook.entity.User;
 import com.dave.notebook.service.UserService;
+import common.util.ShiroUtil;
+import common.vo.JsonResult;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * User控制层
@@ -18,32 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Dave20191011
  * 
  */
-@Controller
+@RestController
 @RequestMapping("/user/")
 public class UserController {
 	@Autowired
 	private UserService userService;
-	
-	/**
-	 * 用户管理页面
-	 * 
-	 * @return system/user_list
-	 */
-	@RequiresPermissions(value = {"admin", "user"})
-    @RequestMapping("doUserListUI")
-	public String doUserListUI(){
-		return "system/user_list";
-	}
-    
-    /**
-     * 用户编辑页面
-     * 
-     * @return system/user_edit
-     */
-    @RequestMapping("doUserEditUI")
-	public String doUserEditUI(){
-		return "system/user_edit";
-	}
     
     /**
      * 添加用户
@@ -52,7 +30,6 @@ public class UserController {
      * @return
      */
     @RequestMapping("doAddUser")
-    @ResponseBody
     public JsonResult doAddUser(User user){
     	if(user == null) {
     		return new JsonResult("保存对象不能为空");
@@ -86,7 +63,6 @@ public class UserController {
      * @return
      */
     @RequestMapping("doFindUserList")
-    @ResponseBody
     public JsonResult doFindUserList(Integer pageCurrent, String username){
     	if(pageCurrent == null || pageCurrent <= 0) {
     		return new JsonResult("参数不合法");
@@ -101,7 +77,6 @@ public class UserController {
      * @return
      */
     @RequestMapping("doFindUserById")
-	@ResponseBody
     public JsonResult doFindUserById(Integer userId){
     	if(StringUtils.isEmpty(userId)) {
     		return new JsonResult("用户ID不能为空");
@@ -117,7 +92,6 @@ public class UserController {
      * @return
      */
     @RequestMapping("doUpdateUser")
-    @ResponseBody
     public JsonResult doUpdateUser(User user){
     	if(user == null) {
     		return new JsonResult("保存对象不能为空");
@@ -157,7 +131,6 @@ public class UserController {
      * @return
      */
     @RequestMapping("doDeleteUser")
-    @ResponseBody
     public JsonResult doDeleteUser(Integer userId){
     	if(StringUtils.isEmpty(userId)) {
     		return new JsonResult("用户ID不能为空");

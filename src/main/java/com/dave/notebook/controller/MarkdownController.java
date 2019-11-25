@@ -8,12 +8,11 @@ import common.util.FileUtils;
 import common.util.ShiroUtil;
 import common.vo.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,34 +24,14 @@ import java.io.PrintWriter;
  * @Date: 2019/11/23 14:35
  * @Description: TODO
  */
-@Controller
+@RestController
 @RequestMapping("/markdown/")
 public class MarkdownController {
 
     @Autowired
     private MarkdownService markdownService;
 
-    @RequestMapping("doMarkdownListUI")
-    public String doMarkdownListUI(){
-        return "system/markdown_list";
-    }
-
-    @RequestMapping("doMarkdownEditUI")
-    public String doMarkdownEditUI() {
-        return "system/markdown_edit";
-    }
-
-    @RequestMapping("doMarkdownUI")
-    public String doMarkdownUI(Model model, Integer markdownId) {
-        String username = ShiroUtil.getCurrentUser().getUsername();
-        String fileName = markdownService.findFileNameByMarkdownId(username, markdownId);
-        String markdownContent = FileUtils.getFileData(username, fileName);
-        model.addAttribute("markdownContent", markdownContent);
-        return "system/markdown";
-    }
-
     @RequestMapping("doFindMarkdownList")
-    @ResponseBody
     public JsonResult doFindMarkdownList(Integer pageCurrent, String fileName){
         String username = ShiroUtil.getCurrentUser().getUsername();
         PageInfo<Markdown> markdownPage = markdownService.findMarkdownList(pageCurrent, username, fileName);
@@ -60,7 +39,6 @@ public class MarkdownController {
     }
 
     @RequestMapping("doGetMarkdownData")
-    @ResponseBody
     public JsonResult doGetMarkdownData(String fileName){
         String username = ShiroUtil.getCurrentUser().getUsername();
         String markdownContent = FileUtils.getFileData(username, fileName);
@@ -71,7 +49,6 @@ public class MarkdownController {
     }
 
     @RequestMapping("doAddMarkdown")
-    @ResponseBody
     public JsonResult doAddMarkdown(String markdownContent, String fileName){
         if(StringUtils.isEmpty(fileName)){
             return new JsonResult("文件名不能为空！！");
@@ -95,7 +72,6 @@ public class MarkdownController {
     }
 
     @RequestMapping("doUpdateMarkdown")
-    @ResponseBody
     public JsonResult doUpdateMarkdown(String markdownContent, String fileName, String oldFileName, Integer markdownId){
         if(StringUtils.isEmpty(fileName)){
             return new JsonResult("文件名不能为空！！");
@@ -121,7 +97,6 @@ public class MarkdownController {
     }
 
     @RequestMapping("doDeleteMarkdown")
-    @ResponseBody
     public JsonResult doDeleteMarkdown(Integer markdownId, String fileName){
         String username = ShiroUtil.getCurrentUser().getUsername();
         if(!FileUtils.deleteMarkdownFile(username, fileName)){

@@ -137,7 +137,7 @@
 
     //1.查询用户菜单
     function doFindUserMenuList() {
-        var url = "doFindUserMenuList";
+        var url = "index/doFindUserMenuList";
         $.post(url, function (result) {
             if (result.state == 1) {
                 doShowMenuUI(result.data);
@@ -193,7 +193,7 @@
 
     //3.查询Markdown菜单
     function doFindMdMenuList() {
-        var url = "doFindMdMenuList";
+        var url = "index/doFindMdMenuList";
         $.post(url, function (result) {
             if (result.state == 1) {
                 doShowMdMenuUI(result.data);
@@ -284,7 +284,7 @@
 
     //修改密码页面
     function doPasswordUI() {
-        $("#mainContentId").load("doPasswordUI", function () {
+        $("#mainContentId").load("index/doPasswordUI", function () {
             $("#mainContentId").removeData();
         });
     }

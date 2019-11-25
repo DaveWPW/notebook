@@ -1,14 +1,13 @@
 package com.dave.notebook.controller;
 
-import common.vo.JsonResult;
 import com.dave.notebook.entity.Role;
 import com.dave.notebook.service.RoleService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import common.vo.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
@@ -19,32 +18,11 @@ import java.util.Map;
  * @author Dave20191012
  *
  */
-@Controller
+@RestController
 @RequestMapping("/role/")
 public class RoleController {
 	@Autowired
     private RoleService roleService;
-	
-	/**
-	 * 角色管理页面
-	 * 
-	 * @return system/role_list
-	 */
-	@RequiresPermissions(value = {"admin", "role"})
-	@RequestMapping("doRoleListUI")
-	public String doRoleListUI() {
-		return "system/role_list";
-	}
-	
-	/**
-     * 角色编辑页面
-     * 
-     * @return system/role_edit
-     */
-    @RequestMapping("doRoleEditUI")
-	public String doRoleEditUI(){
-		return "system/role_edit";
-	}
     
     /**
      * 添加角色
@@ -53,7 +31,6 @@ public class RoleController {
      * @return
      */
     @RequestMapping("doAddRole")
-    @ResponseBody
     public JsonResult doAddRole(Role role) {
     	if(role == null) {
     		return new JsonResult("保存对象不能为空");
@@ -81,7 +58,6 @@ public class RoleController {
      * @return
      */
     @RequestMapping("doFindRoleList")
-    @ResponseBody
     public JsonResult doFindRoleList(Integer pageCurrent, String roleName) {
     	if(pageCurrent == null || pageCurrent <= 0) {
     		return new JsonResult("当前页面数不能为空");
@@ -96,7 +72,6 @@ public class RoleController {
      * @return
      */
     @RequestMapping("doFindRoleById")
-	@ResponseBody
 	public JsonResult doFindRoleById(Integer roleId){
     	if(StringUtils.isEmpty(roleId)) {
     		return new JsonResult("角色ID不能为空");
@@ -111,7 +86,6 @@ public class RoleController {
      * @return
      */
     @RequestMapping("doUpdateRole")
-    @ResponseBody
     public JsonResult doUpdateRole(Role role) {
     	if(role == null) {
     		return new JsonResult("保存对象不能为空");
@@ -143,7 +117,6 @@ public class RoleController {
      * @return
      */
     @RequestMapping("doDeleteRole")
-	@ResponseBody
 	public JsonResult doDeleteRole(Integer roleId){
     	if(StringUtils.isEmpty(roleId)) {
     		return new JsonResult("角色ID不能为空");
@@ -168,7 +141,6 @@ public class RoleController {
      * @return
      */
     @RequestMapping("doFindRoles")
-	@ResponseBody
 	public JsonResult doFindRoles(){
 		List<Map<String, Object>> list = roleService.findRoles();
 	    return new JsonResult(list);

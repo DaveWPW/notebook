@@ -24,6 +24,7 @@ import java.util.List;
  * @Description: TODO
  */
 @RestController
+@RequestMapping("/index/")
 public class IndexController {
 
     @Autowired
@@ -57,7 +58,6 @@ public class IndexController {
      * @return
      */
     @RequestMapping("doUpdatePassword")
-    @ResponseBody
     public JsonResult doUpdatePassword(String oldPassword, String newPassword){
         if(StringUtils.isEmpty(oldPassword)) {
             return new JsonResult("旧密码不能为空");

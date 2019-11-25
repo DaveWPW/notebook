@@ -1,12 +1,14 @@
 package com.dave.notebook.controller;
 
+import com.dave.notebook.service.MarkdownService;
 import common.util.FileUtils;
 import common.util.ShiroUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Author: Dave
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class PageController {
+
+    @Autowired
+    private MarkdownService markdownService;
 
     /**
      * 登录页
@@ -61,6 +66,79 @@ public class PageController {
     @RequestMapping("doPasswordUI")
     public String doPasswordUI() {
         return "system/password";
+    }
+
+    /**
+     * 用户管理页面
+     *
+     * @return system/user_list
+     */
+    @RequiresPermissions(value = {"admin", "user"})
+    @RequestMapping("/user/doUserListUI")
+    public String doUserListUI(){
+        return "system/user_list";
+    }
+
+    /**
+     * 用户编辑页面
+     *
+     * @return system/user_edit
+     */
+    @RequestMapping("/user/doUserEditUI")
+    public String doUserEditUI(){
+        return "system/user_edit";
+    }
+
+    /**
+     * 角色管理页面
+     *
+     * @return system/role_list
+     */
+    @RequiresPermissions(value = {"admin", "role"})
+    @RequestMapping("/role/doRoleListUI")
+    public String doRoleListUI() {
+        return "system/role_list";
+    }
+
+    /**
+     * 角色编辑页面
+     *
+     * @return system/role_edit
+     */
+    @RequestMapping("/role/doRoleEditUI")
+    public String doRoleEditUI(){
+        return "system/role_edit";
+    }
+
+
+    @RequestMapping("/md_menu/doMdMenuListUI")
+    public String doMdMenuListUI(){
+        return "system/md_menu_list";
+    }
+
+    @RequestMapping("/md_menu/doMdMenuEditUI")
+    public String doMdMenuEditUI(){
+        return "system/md_menu_edit";
+    }
+
+
+    @RequestMapping("/markdown/doMarkdownListUI")
+    public String doMarkdownListUI(){
+        return "system/markdown_list";
+    }
+
+    @RequestMapping("/markdown/doMarkdownEditUI")
+    public String doMarkdownEditUI() {
+        return "system/markdown_edit";
+    }
+
+    @RequestMapping("/markdown/doMarkdownUI")
+    public String doMarkdownUI(Model model, Integer markdownId) {
+        String username = ShiroUtil.getCurrentUser().getUsername();
+        String fileName = markdownService.findFileNameByMarkdownId(username, markdownId);
+        String markdownContent = FileUtils.getFileData(username, fileName);
+        model.addAttribute("markdownContent", markdownContent);
+        return "system/markdown";
     }
 
 }
