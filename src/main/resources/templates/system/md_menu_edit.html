@@ -16,22 +16,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="menu-name-id" class="col-sm-2 control-label">菜单编号：</label>
-                <div class="col-sm-10" style="width:100px;">
-                    <input type="text" oninput = "value=value.replace(/[^\d]/g,'')" maxlength="10" class="form-control" id="menu-num-id" placeholder="编号">
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="menu-name-id" class="col-sm-2 control-label">菜单名称：</label>
                 <div class="col-sm-10" style="width:300px;">
                     <input type="text" class="form-control" id="menu-name-id" placeholder="名称">
                 </div>
             </div>
-            <div class="form-group">
-                <label for="parent-num-id" class="col-sm-2 control-label">上级菜单：</label>
+            <div class="form-group" id="parent-id">
+                <label for="parent-id" class="col-sm-2 control-label">上级菜单：</label>
                 <div class="col-sm-10" style="width:300px;">
-                    <input type="text" class="form-control load-sys-menu" readonly="readonly" id="parent-num-id"
-                           placeholder="上级菜单">
+                    <input type="text" class="form-control load-sys-menu" readonly="readonly" id="parentId" placeholder="上级菜单">
                 </div>
             </div>
             <div class="form-group" id="markdown-id">
@@ -74,8 +67,8 @@
         data: {
             simpleData: {
                 enable: true,
-                idKey: "menuNum",  //节点数据中保存唯一标识的属性名称
-                pIdKey: "parentNum",  //节点数据中保存其父节点唯一标识的属性名称
+                idKey: "menuId",  //节点数据中保存唯一标识的属性名称
+                pIdKey: "parentId",  //节点数据中保存其父节点唯一标识的属性名称
                 rootPId: null  //根节点id
             }//json 格式javascript对象
         }
@@ -97,13 +90,6 @@
     });
 
     function doInitPageData() {
-        //假如是修改则初始化页面数据
-        var rowData = $("#mainContentId").data("rowData");
-        if(rowData){
-            doInitEditFormData(rowData);
-        }else{
-            doChangePage(1);
-        }
         var url = "markdown/doFindMarkdownListName"
         $.getJSON(url, function(result){
             if(result.state == 1){
@@ -112,12 +98,28 @@
                 alert(result.message);
             }
         });
+        //假如是修改则初始化页面数据
+        var rowData = $("#mainContentId").data("rowData");
+        if(rowData){
+            doInitEditFormData(rowData);
+        }else{
+            doChangePage(1);
+        }
     }
     function doInitPageMarkdownList(data){
         var select = $("#mrakdownId");
         select.empty();
         for(var i in data){
-            var option = "<option value='"+data[i].markdownId+"'>"+data[i].fileName+"</option>";
+            var rowData = $("#mainContentId").data("rowData");
+            var selected ="";
+            if(rowData){
+                if(rowData.menuType == 2){
+                    if(rowData.fileName === data[i].fileName){
+                        selected = "selected='selected'";
+                    }
+                }
+            }
+            var option = "<option value='"+data[i].markdownId+"' "+selected+">"+data[i].fileName+"</option>";
             select.append(option);
         }
     }
@@ -125,11 +127,10 @@
     //初始化表单数据
     function doInitEditFormData(rowData) {
         $(".typeRadio input[value='" + rowData.menuType + "']").prop("checked", true);
-        $("#menu-num-id").val(rowData.menuNum);
         $("#menu-name-id").val(rowData.menuName);
-        $("#parent-num-id").val(rowData.parentName);
-        $("#parent-num-id").data("parentNum", rowData.parentNum);
-        $("#file-name-id").html(rowData.fileName);
+        $("#parentId").val(rowData.parentName);
+        $("#parentId").data("parentId", rowData.parentId);
+        doChangePage(rowData.menuType);
     }
 
     //加载树菜单
@@ -155,10 +156,9 @@
         }
         //2.将node数据填充到页面上级菜单对应的表单元素上
         //2.1 节点名字(表单中显示这个值)
-        $("#parent-num-id").val(nodes[0].name);
+        $("#parentId").val(nodes[0].name);
         //2.2 节点id (进行绑定,此值最后要存储到数据库)
-        $("#parent-num-id").data("parentNum", nodes[0].id);
-        console.log("parentNum = " + nodes[0].id);
+        $("#parentId").data("parentId", nodes[0].id);
         //3.隐藏zTree对象
         doHideTree();
     }
@@ -170,9 +170,11 @@
 
     function doChangePage(type) {
         if (type == 1) {
+            $("#parent-id").css("display", "none");
             $("#markdown-id").css("display", "none");
         }
         if (type == 2) {
+            $("#parent-id").css("display", "block");
             $("#markdown-id").css("display", "block");
         }
     }
@@ -182,8 +184,8 @@
         var params = doGetEditFormData();
         var rowData = $("#mainContentId").data("rowData");
         if (rowData) params.menuId = rowData.menuId;
-        var insertUrl = "md_menu/doAddMdMemu";
-        var updateUrl = "md_menu/doUpdateMdMemu";
+        var insertUrl = "md_menu/doAddMdMenu";
+        var updateUrl = "md_menu/doUpdateMdMenu";
         var url = rowData ? updateUrl : insertUrl;
         console.log(params);
         $.post(url, params, function (result) {
@@ -199,12 +201,14 @@
     function doGetEditFormData() {
         var params = {
             menuType : $(".typeRadio input[type='radio']:checked").val(),
-            menuNum : $("#menu-num-id").val(),
-            menuName : $("#menu-name-id").val(),
-            parentNum : $("#parent-num-id").data("parentNum")
+            menuName : $("#menu-name-id").val()
         };
         if($(".typeRadio input[type='radio']:checked").val() == 2){
+            params.parentId = $("#parentId").data("parentId") == null ? 0 : $("#parentId").data("parentId");
             params.markdownId = $("#mrakdownId").val();
+        }else{
+            params.parentId = 0;
+            params.markdownId = 0;
         }
         return params;
     }

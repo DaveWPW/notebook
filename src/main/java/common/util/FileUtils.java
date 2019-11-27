@@ -8,46 +8,91 @@ import java.io.*;
 import java.util.UUID;
 
 public class FileUtils {
-	
+
 	/**
-	 * 图片上传工具类 
-	 * 
+	 * 上传图片文件
+	 *
+	 * @param username
 	 * @param file
-	 * @param path
+	 * @param request
+	 * @param response
 	 * @return
 	 */
     public static String uploadImageFile(String username, MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html;charset=UTF-8");
-		//文件存放的路径
-		String path = request.getSession().getServletContext().getRealPath("notebook/upload/"+username+"/images");
 		//获取文件名
 		String fileName = file.getOriginalFilename();
-		//文件重命名
+		//使用UUID重命名
 		fileName = UUID.randomUUID() + fileName.substring(fileName.indexOf("."), fileName.length());
-		File targetFile = new File(path, fileName);
+		//文件存放的路径
+		File targetFile = new File("D:/notebook/upload/"+username+"/images/"+fileName);
 		//是否存在
 		if(!targetFile.exists()){
 			//创建目录
 			targetFile.mkdirs();
 		}
 		try {
+			//保存
 			file.transferTo(targetFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String url = request.getScheme() + "://" + request.getServerName() + request.getContextPath() + "/notebook/upload/"+username+"/images/" + fileName;
+		//全路径（协议类型://域名/项目名/命名空间/文件名）
+		String url = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/markdown/upload/"+username+"/"+fileName;
 		return url;
 	}
 
-    /**
-     * 上传MarkDown文件
-     * 
-     * @param fileName
-     * @param data
-     * @return
-     */
+	/**
+	 * 获取图片文件
+	 *
+	 * @param username
+	 * @param fileName
+	 * @param response
+	 */
+	public static void getImageFile(String username, String fileName, HttpServletResponse response) {
+		String filePath = "D:/notebook/upload/"+username+"/images/"+fileName;
+		File file = new File(filePath);
+		if(file.exists()){
+			FileInputStream fileInputStream = null;
+			OutputStream outputStream = null;
+			try {
+				fileInputStream = new FileInputStream(file);
+				outputStream = response.getOutputStream();
+				int count = 0;
+				byte[] buffer = new byte[1024 * 8];
+				while ((count = fileInputStream.read(buffer)) != -1) {
+					outputStream.write(buffer, 0, count);
+					outputStream.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					fileInputStream.close();
+					outputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * 上传 MarkDown 文件
+	 *
+	 * @param username
+	 * @param fileName
+	 * @param data
+	 * @return
+	 */
     public static boolean uploadMarkDownFile(String username, String fileName, String data) {
+		File mkdir = new File("D:/notebook/upload/"+username+"/markdown/");
+		//是否存在
+		if(!mkdir.exists()){
+			mkdir.mkdirs();
+		}
     	File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
 		try {
 			//是否存在
@@ -63,15 +108,15 @@ public class FileUtils {
 			return false;
 		}
 	}
-    
-    /**
-     * 上传MarkDown文件输出流处理方法
-     * 
-     * @param outputStream
-     * @param data
-     * @return
-     */
-    public static boolean uploadOutputStream(OutputStream outputStream, String data) {
+
+	/**
+	 * 上传 MarkDown 文件输出流处理方法
+	 *
+	 * @param outputStream
+	 * @param data
+	 * @return
+	 */
+	public static boolean uploadOutputStream(OutputStream outputStream, String data) {
 		boolean isSucess = false;
 		OutputStreamWriter outputStreamWriter = null;
 		BufferedWriter bufferedWriter = null;
@@ -112,10 +157,11 @@ public class FileUtils {
 		}
 		return isSucess;
 	}
-	
+
 	/**
-	 * 获取文件数据
-	 * 
+	 * 获取 Markdown 文件内容
+	 *
+	 * @param username
 	 * @param fileName
 	 * @return
 	 */
@@ -159,6 +205,13 @@ public class FileUtils {
 		}
 	}
 
+	/**
+	 * 删除 Markdown 文件
+	 *
+	 * @param username
+	 * @param fileName
+	 * @return
+	 */
 	public static boolean deleteMarkdownFile(String username, String fileName) {
 		File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
 		if (file.exists() && file.isFile()) {

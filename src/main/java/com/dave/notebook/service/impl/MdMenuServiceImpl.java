@@ -36,6 +36,12 @@ public class MdMenuServiceImpl implements MdMenuService {
     }
 
     @Override
+    public List<Node> findZtreeMenuShow(String username) {
+        List<Node> zMdMenus = mdMenuMapper.findZtreeMenuShow(username);
+        return zMdMenus;
+    }
+
+    @Override
     public int addMdMenu(String username, MarkdownMenu markdownMenu) {
         markdownMenu.setCreateUser(username);
         markdownMenu.setCreateTime(new Date());
@@ -46,11 +52,43 @@ public class MdMenuServiceImpl implements MdMenuService {
     }
 
     @Override
-    public int updateMdMem(String username, MarkdownMenu markdownMenu) {
-        markdownMenu.setModifyUser(username);
+    public int selectConutMdMenu(String username, String menuName) {
+        MarkdownMenu markdownMenu = new MarkdownMenu();
+        markdownMenu.setMenuName(menuName);
+        markdownMenu.setCreateUser(username);
+        int conut = mdMenuMapper.selectCount(markdownMenu);
+        return conut;
+    }
+
+    @Override
+    public int selectConutMdMenu(String username, Integer menuId) {
+        MarkdownMenu markdownMenu = new MarkdownMenu();
+        markdownMenu.setParentId(menuId);
+        markdownMenu.setCreateUser(username);
+        int conut = mdMenuMapper.selectCount(markdownMenu);
+        return conut;
+    }
+
+    @Override
+    public int selectConutMdMenu(String username, String menuName, Integer menuId) {
+        int conut = mdMenuMapper.selectCountMdMenu(username, menuName, menuId);
+        return conut;
+    }
+
+    @Override
+    public int updateMdMenu(String username, MarkdownMenu markdownMenu) {markdownMenu.setModifyUser(username);
         markdownMenu.setModifyTime(new Date());
         int update = mdMenuMapper.updateByPrimaryKeySelective(markdownMenu);
         return update;
+    }
+
+    @Override
+    public int deleteMdMenu(Integer menuId) {
+        MarkdownMenu markdownMenu = new MarkdownMenu();
+        markdownMenu.setParentId(menuId);
+        int deleteList = mdMenuMapper.delete(markdownMenu);
+        int delete = mdMenuMapper.deleteByPrimaryKey(menuId);
+        return delete;
     }
 
 }

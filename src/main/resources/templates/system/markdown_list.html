@@ -88,7 +88,7 @@
 			"<td><span class='numberClass'></span></td>"+
 			"<td>"+row.fileName+"</td>"+
 			"<td>"+row.createUser+"</td>"+
-			"<td>"+row.createTime+"</td>"+
+			"<td>"+new Date(row.createTime).toLocaleString()+"</td>"+
 			"<td><a class='btn-delete'>Delete&nbsp;|&nbsp;<a class='btn-update'>Update</a></td>";
 		return tds;
 	}

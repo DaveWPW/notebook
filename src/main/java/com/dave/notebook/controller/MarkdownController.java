@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.dave.notebook.entity.Markdown;
 import com.dave.notebook.service.MarkdownService;
 import com.github.pagehelper.PageInfo;
+import common.util.FileUtils;
 import common.util.ShiroUtil;
 import common.vo.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -112,6 +114,11 @@ public class MarkdownController {
             wirte.flush();
             wirte.close();
         }
+    }
+
+    @RequestMapping("upload/{username}/{fileName}")
+    private void doGetImageFile(@PathVariable String username, @PathVariable String fileName, HttpServletResponse response){
+        FileUtils.getImageFile(username, fileName, response);
     }
 
     @RequestMapping("doFindMarkdownListName")

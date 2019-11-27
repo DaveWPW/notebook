@@ -17,7 +17,7 @@
 			  <th>真实名</th>
 			  <th>角色</th>
 			  <th>创建用户</th>
-			  <th>修改用户</th>
+			  <th>创建时间</th>
 			  <th style="width:120px;">操作</th>
 		    </tr>
 		  </thead>
@@ -92,7 +92,7 @@
 			"<td>"+row.realname+"</td>"+
 			"<td>"+row.roleId+"</td>"+
 			"<td>"+row.createUser+"</td>"+
-			"<td>"+row.modifyUser+"</td>"+
+			"<td>"+new Date(row.createTime).toLocaleString()+"</td>"+
 			"<td><a class='btn-delete'>Delete&nbsp;|&nbsp;<a class='btn-update'>Update</a></td>";
 		return tds;
 	}

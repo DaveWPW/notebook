@@ -38,9 +38,20 @@ public class MdMenuController {
         return new JsonResult(zMdMenus);
     }
 
-    @RequestMapping("doAddMdMemu")
-    public JsonResult doAddMdMemu(MarkdownMenu markdownMenu){
+    @RequestMapping("doFindZtreeMenuShow")
+    public JsonResult doFindZtreeMenuShow() {
         String username = ShiroUtil.getCurrentUser().getUsername();
+        List<Node> zMdMenus = mdMenuService.findZtreeMenuShow(username);
+        return new JsonResult(zMdMenus);
+    }
+
+    @RequestMapping("doAddMdMenu")
+    public JsonResult doAddMdMenu(MarkdownMenu markdownMenu){
+        String username = ShiroUtil.getCurrentUser().getUsername();
+        int conut = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuName());
+        if(conut > 0){
+            return new JsonResult("菜单名称已存在！！");
+        }
         int row = mdMenuService.addMdMenu(username, markdownMenu);
         if(row == 1){
             return new JsonResult("添加成功！！", 1);
@@ -49,14 +60,32 @@ public class MdMenuController {
         }
     }
 
-    @RequestMapping("doUpdateMdMemu")
+    @RequestMapping("doUpdateMdMenu")
     public JsonResult doUpdateMdMemu(MarkdownMenu markdownMenu){
         String username = ShiroUtil.getCurrentUser().getUsername();
-        int row = mdMenuService.updateMdMem(username, markdownMenu);
+        int conut = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuName(), markdownMenu.getMenuId());
+        if(conut > 0){
+            return new JsonResult("菜单名称已存在！！");
+        }
+        int conut2 = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuId());
+        if(conut2 > 0){
+            return new JsonResult("存在下级文件不能修改！！");
+        }
+        int row = mdMenuService.updateMdMenu(username, markdownMenu);
         if(row == 1){
             return new JsonResult("修改成功！！", 1);
         }else{
             return new JsonResult("修改失败！！");
+        }
+    }
+
+    @RequestMapping("doDeleteMdMenu")
+    public JsonResult doDeleteMdMenu(Integer menuId){
+        int row = mdMenuService.deleteMdMenu(menuId);
+        if(row == 1){
+            return new JsonResult("删除成功！！", 1);
+        }else{
+            return new JsonResult("删除失败！！");
         }
     }
 

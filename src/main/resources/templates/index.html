@@ -9,8 +9,6 @@
     <!-- Editor Maekdown -->
     <link rel="stylesheet" href="bower_components/editormd/css/style.css"/>
     <link rel="stylesheet" href="bower_components/editormd/css/editormd.css"/>
-    <!-- ztree目录 -->
-    <link rel="stylesheet" href="bower_components/ztree/css/zTreeStyle/zTreeStyle.css">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
@@ -20,6 +18,8 @@
     <link rel="stylesheet" href="bower_components/layer/skin/default/layer.css">
     <link rel="stylesheet" href="bower_components/ztree/css/metroStyle/metroStyle.css"/>
     <link rel="stylesheet" href="bower_components/treegrid/jquery.treegrid.css"/>
+    <!-- ztree目录 -->
+    <link rel="stylesheet" href="bower_components/ztree/css/zTreeStyle/zTreeStyle.css">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
     <style>
         .editormd-html-preview {
@@ -48,7 +48,7 @@
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                           <span class="hidden-xs">
-                              <span>Username: <span th:text="${username}"/></span>
+                              <span th:text="${username}"/>
                           </span>
                         </a>
                     </li>
@@ -77,8 +77,8 @@
                 <li class="treeview">
                     <a href="#"><i class="fa fa-link"></i><span>在线文档</span>
                         <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                </span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
                     </a>
                     <ul id="md_menus" class="treeview-menu"></ul>
                 </li>
@@ -135,7 +135,7 @@
         doShowMarkDown();
     })
 
-    //1.查询用户菜单
+    //1.1.查询用户菜单
     function doFindUserMenuList() {
         var url = "index/doFindUserMenuList";
         $.post(url, function (result) {
@@ -151,7 +151,7 @@
         });
     }
 
-    //2.显示菜单
+    //1.2.显示菜单
     function doShowMenuUI(menus) {
         var menusUL = $("#menus");
         var menuLI;
@@ -191,7 +191,7 @@
         }
     }
 
-    //3.查询Markdown菜单
+    //2.1.查询Markdown菜单
     function doFindMdMenuList() {
         var url = "index/doFindMdMenuList";
         $.post(url, function (result) {
@@ -202,15 +202,15 @@
         });
     }
 
-    //4.显示Markdown菜单
+    //2.2.显示Markdown菜单
     function doShowMdMenuUI(menus) {
         var mdMenusUL = $("#md_menus");
         var mdMenuLI;
         for (var i = 0; i < menus.length; i++) {
-            if (menus[i].parentNum == 0) {
+            if (menus[i].parentId == 0) {
                 var exist = false;
                 for (var a = 0; a < menus.length; a++) {
-                    if (menus[i].menuNum == menus[a].parentNum) {
+                    if (menus[i].menuId == menus[a].parentId) {
                         exist = true;
                         break;
                     }
@@ -224,12 +224,12 @@
                         "<i class='fa fa-angle-left pull-right'></i>" +
                         "</span>" +
                         "</a>" +
-                        "<ul id='md" + menus[i].menuNum + "-tree' class='treeview-menu'></ul>" +
+                        "<ul id='md" + menus[i].menuId + "-tree' class='treeview-menu'></ul>" +
                         "</li>";
                     mdMenusUL.append(treeMdMenuLI);
                     for (var a = 0; a < menus.length; a++) {
-                        if (menus[i].menuNum == menus[a].parentNum) {
-                            var treeMdMenuUL = $("#md" + menus[i].menuNum + "-tree");
+                        if (menus[i].menuId == menus[a].parentId) {
+                            var treeMdMenuUL = $("#md" + menus[i].menuId + "-tree");
                             mdMenuLI = "<li><a id='" + menus[a].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[a].menuName + "</a></li>";
                             treeMdMenuUL.append(mdMenuLI);
                         }
@@ -284,7 +284,7 @@
 
     //修改密码页面
     function doPasswordUI() {
-        $("#mainContentId").load("index/doPasswordUI", function () {
+        $("#mainContentId").load("doPasswordUI", function () {
             $("#mainContentId").removeData();
         });
     }

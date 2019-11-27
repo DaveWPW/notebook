@@ -8,12 +8,10 @@ public class MarkdownMenu {
     @Id
     @Column(name = "menu_id")
     private Integer menuId;
-    @Column(name = "menu_num")
-    private Integer menuNum;
     @Column(name = "menu_name")
     private String menuName;
-    @Column(name = "parent_num")
-    private Integer parentNum;
+    @Column(name = "parent_id")
+    private Integer parentId;
     @Transient
     private String parentName;
     @Column(name = "menu_type")
@@ -39,14 +37,6 @@ public class MarkdownMenu {
         this.menuId = menuId;
     }
 
-    public Integer getMenuNum() {
-        return menuNum;
-    }
-
-    public void setMenuNum(Integer menuNum) {
-        this.menuNum = menuNum;
-    }
-
     public String getMenuName() {
         return menuName;
     }
@@ -55,12 +45,12 @@ public class MarkdownMenu {
         this.menuName = menuName;
     }
 
-    public Integer getParentNum() {
-        return parentNum;
+    public Integer getParentId() {
+        return parentId;
     }
 
-    public void setParentNum(Integer parentNum) {
-        this.parentNum = parentNum;
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     public String getParentName() {
