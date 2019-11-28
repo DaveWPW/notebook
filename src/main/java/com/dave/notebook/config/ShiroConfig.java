@@ -75,6 +75,7 @@ public class ShiroConfig {
         filterMap.put("/dist/**", "anon");
         filterMap.put("/images/**", "anon");
         filterMap.put("/plugins/**", "anon");
+        filterMap.put("/favicon.ico", "anon");
         filterMap.put("/doLogin", "anon");
         filterMap.put("/doLogout", "logout");
         filterMap.put("/**", "authc");

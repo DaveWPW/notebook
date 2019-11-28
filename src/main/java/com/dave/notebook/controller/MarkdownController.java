@@ -41,6 +41,9 @@ public class MarkdownController {
 
     @RequestMapping("doGetMarkdownFile")
     public JsonResult doGetMarkdownFile(String fileName){
+        if(StringUtils.isEmpty(fileName)){
+            return new JsonResult("文件名不能为空！！");
+        }
         String username = ShiroUtil.getCurrentUser().getUsername();
         String markdownContent = markdownService.getMarkdownFile(username, fileName);
         JsonResult json = new JsonResult();
@@ -60,6 +63,9 @@ public class MarkdownController {
             return new JsonResult("文件名已存在！！");
         }
         int row = markdownService.addMaekdown(username, fileName, markdownContent);
+        if(row == 1 && fileName.equals("README")){
+            return new JsonResult("编辑成功！！", 1);
+        }
         if(row == 1){
             return new JsonResult("添加成功！！", 1);
         }else{
@@ -69,6 +75,9 @@ public class MarkdownController {
 
     @RequestMapping("doUpdateMarkdown")
     public JsonResult doUpdateMarkdown(String markdownContent, String fileName, String oldFileName, Integer markdownId){
+        if(null == markdownId){
+            return new JsonResult("非法参数！！");
+        }
         if(StringUtils.isEmpty(fileName)){
             return new JsonResult("文件名不能为空！！");
         }
@@ -88,6 +97,12 @@ public class MarkdownController {
 
     @RequestMapping("doDeleteMarkdown")
     public JsonResult doDeleteMarkdown(Integer markdownId, String fileName){
+        if(null == markdownId){
+            return new JsonResult("非法参数！！");
+        }
+        if(StringUtils.isEmpty(fileName)){
+            return new JsonResult("文件名不能为空！！");
+        }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int row = markdownService.deleteMarkdown(markdownId, username, fileName);
         if(row == 1){

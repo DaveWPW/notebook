@@ -23,7 +23,7 @@ import java.util.List;
  * @Description: TODO
  */
 @RestController
-@RequestMapping("/index/")
+@RequestMapping("/")
 public class IndexController {
 
     @Autowired
@@ -43,8 +43,7 @@ public class IndexController {
     }
 
     @PostMapping("doFindMdMenuList")
-    public JsonResult doFindMdMenuList(){
-        String username = ShiroUtil.getCurrentUser().getUsername();
+    public JsonResult doFindMdMenuList(String username){
         List<MarkdownMenu> mdMenus = mdMenuService.findMdMenuList(username);
         return new JsonResult(mdMenus);
     }

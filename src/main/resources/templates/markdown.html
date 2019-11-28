@@ -1,9 +1,11 @@
 <div class="row">
-    <div id="tree" class="ztree" style="float:left; width:15%; margin-left:10px;" align="left"></div>
-    <div id="layout" style="float:right; width:80%;">
+    <div id="layout">
         <div id="test-editormd-view">
-            <textarea id="append-test" class="markdown-body" style="display:none;"
-                      th:text="${markdownContent}"></textarea>
+            <a onclick="doTreeState(1)">显示</a>/<a onclick="doTreeState(2)">隐藏</a>
+            <div style="float:right; width:260px;">
+                <div id="tree" class="ztree" style="background:#DDDDDD;" align="left"></div>
+            </div>
+            <textarea id="append-test" class="markdown-body" style="display:none;" th:text="${markdownContent}"></textarea>
         </div>
     </div>
 </div>
@@ -30,6 +32,14 @@
         $("#tree").css("left", "");
         $("#tree").css("top", "");
     });
+    function doTreeState(type){
+        if(type == 1){
+            $("#tree").css("display","block");
+        }else if(type == 2){
+            $("#tree").css("display","none");
+        }
+
+    }
 </script>
 </body>
 </html>

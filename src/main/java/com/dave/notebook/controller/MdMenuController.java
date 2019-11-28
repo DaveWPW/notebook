@@ -6,6 +6,7 @@ import common.util.ShiroUtil;
 import common.vo.JsonResult;
 import common.vo.Node;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +48,12 @@ public class MdMenuController {
 
     @RequestMapping("doAddMdMenu")
     public JsonResult doAddMdMenu(MarkdownMenu markdownMenu){
+        if(null == markdownMenu){
+            return new JsonResult("非法参数！！");
+        }
+        if(StringUtils.isEmpty(markdownMenu.getMenuName())){
+            return new JsonResult("菜单名不能为空！！");
+        }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int conut = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuName());
         if(conut > 0){
@@ -62,6 +69,12 @@ public class MdMenuController {
 
     @RequestMapping("doUpdateMdMenu")
     public JsonResult doUpdateMdMemu(MarkdownMenu markdownMenu){
+        if(null == markdownMenu){
+            return new JsonResult("非法参数！！");
+        }
+        if(StringUtils.isEmpty(markdownMenu.getMenuName())){
+            return new JsonResult("菜单名不能为空！！");
+        }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int conut = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuName(), markdownMenu.getMenuId());
         if(conut > 0){
@@ -81,6 +94,9 @@ public class MdMenuController {
 
     @RequestMapping("doDeleteMdMenu")
     public JsonResult doDeleteMdMenu(Integer menuId){
+        if(null == menuId){
+            return new JsonResult("非法参数！！");
+        }
         int row = mdMenuService.deleteMdMenu(menuId);
         if(row == 1){
             return new JsonResult("删除成功！！", 1);

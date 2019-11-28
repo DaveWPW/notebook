@@ -35,7 +35,7 @@
     <header class="main-header">
         <!-- Logo -->
         <a href="doIndexUI" class="logo">
-            <span class="logo-mini"><b>N</b></span>
+            <span class="logo-mini"><b><i class="glyphicon glyphicon-home"></i></b></span>
             <span class="logo-lg"><b>NoteBook</b></span>
         </a>
         <!-- Header Navbar -->
@@ -45,10 +45,10 @@
             </a>
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    <li class="dropdown user user-menu">
+                    <li class="dropdown user user-menu" style="margin-right:8px">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                           <span class="hidden-xs">
-                              <span th:text="${username}"/>
+                              <span id="username-id" th:text="${username}"/>
                           </span>
                         </a>
                     </li>
@@ -65,7 +65,7 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <!-- Treeview 1 -->
                 <li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i><span>系统管理</span>
+                    <a href="#"><i class="glyphicon glyphicon-folder-open"></i><span>系统管理</span>
                         <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -75,7 +75,7 @@
                 <!-- ./treeview 1 -->
                 <!-- Treeview 2 -->
                 <li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i><span>在线文档</span>
+                    <a href="#"><i class="glyphicon glyphicon-folder-open"></i><span>在线文档</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -84,10 +84,13 @@
                 </li>
                 <!-- ./treeview 2 -->
                 <li>
-                    <a onclick="doPasswordUI()"><i class="fa fa-gear"></i><span>修改密码</span></a>
+                    <a onclick="doHomeEditUI()"><i class="glyphicon glyphicon-duplicate"></i><span>编辑首页</span></a>
                 </li>
                 <li>
-                    <a href="doLogout"><i class="fa fa-arrow-left"></i><span>退出登录</span></a>
+                    <a onclick="doPasswordUI()"><i class="glyphicon glyphicon-cog"></i><span>修改密码</span></a>
+                </li>
+                <li>
+                    <a href="doLogout"><i class="glyphicon glyphicon-share-alt"></i><span>退出登录</span></a>
                 </li>
             </ul>
             <!-- /.sidebar-menu -->
@@ -137,7 +140,7 @@
 
     //1.1.查询用户菜单
     function doFindUserMenuList() {
-        var url = "index/doFindUserMenuList";
+        var url = "doFindUserMenuList";
         $.post(url, function (result) {
             if (result.state == 1) {
                 doShowMenuUI(result.data);
@@ -146,7 +149,6 @@
                 doLoadUI("load-role-id", "role/doRoleListUI");
                 doLoadUI("load-markdown-id", "markdown/doMarkdownListUI");
                 doLoadUI("load-markdown-menu-id", "md_menu/doMdMenuListUI");
-                doHomeEditUI();
             }
         });
     }
@@ -167,7 +169,7 @@
                 if (exist) {
                     var treeMenuLI =
                         "<li class='treeview'>" +
-                        "<a href='#'><i class='fa fa-link'></i>" +
+                        "<a href='#'><i class='glyphicon glyphicon-folder-open'></i>" +
                         "<span>" + menus[i].menuName + "</span>" +
                         "<span class='pull-right-container'>" +
                         "<i class='fa fa-angle-left pull-right'></i>" +
@@ -179,12 +181,12 @@
                     for (var a = 0; a < menus.length; a++) {
                         if (menus[i].menuId == menus[a].parentId) {
                             var treeMenuUL = $("#" + menus[i].permission + "-tree");
-                            menuLI = "<li><a id='load-" + menus[a].permission + "-id'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[a].menuName + "</a></li>";
+                            menuLI = "<li><a id='load-" + menus[a].permission + "-id'><i class='glyphicon glyphicon-file'></i>" + menus[a].menuName + "</a></li>";
                             treeMenuUL.append(menuLI);
                         }
                     }
                 } else {
-                    menuLI = "<li><a id='load-" + menus[i].permission + "-id'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[i].menuName + "</a></li>";
+                    menuLI = "<li><a id='load-" + menus[i].permission + "-id'><i class='glyphicon glyphicon-file'></i>" + menus[i].menuName + "</a></li>";
                     menusUL.append(menuLI);
                 }
             }
@@ -193,8 +195,11 @@
 
     //2.1.查询Markdown菜单
     function doFindMdMenuList() {
-        var url = "index/doFindMdMenuList";
-        $.post(url, function (result) {
+        var url = "doFindMdMenuList";
+        var params = {
+            username : $("#username-id").html()
+        }
+        $.post(url, params, function (result) {
             if (result.state == 1) {
                 doShowMdMenuUI(result.data);
                 $("#md_menus").on("click", ".open-markdown", doMoekdownUI);
@@ -218,7 +223,7 @@
                 if (exist) {
                     var treeMdMenuLI =
                         "<li class='treeview'>" +
-                        "<a href='#'><i class='fa fa-link'></i>" +
+                        "<a href='#'><i class='glyphicon glyphicon-folder-open'></i>" +
                         "<span>" + menus[i].menuName + "</span>" +
                         "<span class='pull-right-container'>" +
                         "<i class='fa fa-angle-left pull-right'></i>" +
@@ -230,12 +235,12 @@
                     for (var a = 0; a < menus.length; a++) {
                         if (menus[i].menuId == menus[a].parentId) {
                             var treeMdMenuUL = $("#md" + menus[i].menuId + "-tree");
-                            mdMenuLI = "<li><a id='" + menus[a].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[a].menuName + "</a></li>";
+                            mdMenuLI = "<li><a id='" + menus[a].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-file'></i>" + menus[a].menuName + "</a></li>";
                             treeMdMenuUL.append(mdMenuLI);
                         }
                     }
                 } else {
-                    mdMenuLI = "<li><a id='" + menus[i].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-chevron-right'></i>" + menus[i].menuName + "</a></li>";
+                    mdMenuLI = "<li><a id='" + menus[i].markdownId + "' class='open-markdown'><i class='glyphicon glyphicon-file'></i>" + menus[i].menuName + "</a></li>";
                     mdMenusUL.append(mdMenuLI);
                 }
             }
@@ -244,7 +249,8 @@
 
     function doMoekdownUI() {
         var markdownId = $(this).attr('id');
-        var url = "doMarkdownUI?markdownId=" + markdownId;
+        var username = $("#username-id").html();
+        var url = "doMarkdownUI?username="+username+"&markdownId="+markdownId;
         $("#mainContentId").load(url, function () {
             $("#mainContentId").removeData();
         });
@@ -273,13 +279,11 @@
 
     //首页编辑
     function doHomeEditUI() {
-        $("#load-home-id").click(function () {
-            var fileName = $("#fileName").val();
-            $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
-                $("#mainContentId").removeData();
-                $("#mainContentId").data("fileName", fileName);
-            });
-        })
+        var fileName = $("#fileName").val();
+        $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
+            $("#mainContentId").removeData();
+            $("#mainContentId").data("fileName", fileName);
+        });
     }
 
     //修改密码页面

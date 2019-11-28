@@ -61,6 +61,9 @@ public class MarkdownServiceImpl implements MarkdownService {
     public int addMaekdown(String username, String fileName, String markdownContent) {
         boolean add = FileUtils.uploadMarkDownFile(username, fileName, markdownContent);
         int insert = 0;
+        if(add && fileName.equals("README")){
+            return 1;
+        }
         if(add){
             Markdown markdown = new Markdown();
             markdown.setFileName(fileName);

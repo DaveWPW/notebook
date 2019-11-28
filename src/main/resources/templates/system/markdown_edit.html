@@ -30,20 +30,24 @@
     });
     function doGetMarkdownFile() {
         var fileName = $("#mainContentId").data("fileName");
-        if (fileName != "README") {
-            $("#markdownName").show();
-            $(".markdown-name").val(fileName);
-        }
-        var url = "markdown/doGetMarkdownFile";
-        var params = {"fileName": fileName}
-        $.post(url, params, function (result) {
-            if (result.state == 1) {
-                $("#markdownContent").val(result.data);
-                $("#markdownName").find("input").val(fileName);
-            } else {
-                alert("获取" + fileName + ".md内容失败！！");
+        if(fileName){
+            if (fileName != "README") {
+                $("#markdownName").show();
+                $(".markdown-name").val(fileName);
             }
-        });
+            var url = "markdown/doGetMarkdownFile";
+            var params = {"fileName": fileName}
+            $.post(url, params, function (result) {
+                if (result.state == 1) {
+                    $("#markdownContent").val(result.data);
+                    $("#markdownName").find("input").val(fileName);
+                } else {
+                    alert("获取" + fileName + ".md内容失败！！");
+                }
+            });
+        }else{
+            $("#markdownName").show();
+        }
     }
     function doSaveOrUpdateMarkdown() {
         var fileName = $(".markdown-name").val();

@@ -6,6 +6,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @Description: TODO
  */
 @Controller
+@RequestMapping("/")
 public class PageController {
 
     @Autowired
@@ -67,8 +69,7 @@ public class PageController {
     }
 
     @RequestMapping("doMarkdownUI")
-    public String doMarkdownUI(Model model, Integer markdownId) {
-        String username = ShiroUtil.getCurrentUser().getUsername();
+    public String doMarkdownUI(Model model, String username, Integer markdownId) {
         String markdownContent = markdownService.findMarkdownById(username, markdownId);
         model.addAttribute("markdownContent", markdownContent);
         return "markdown";
@@ -80,7 +81,7 @@ public class PageController {
      * @return system/user_list
      */
     @RequiresPermissions(value = {"admin", "user"})
-    @RequestMapping("/user/doUserListUI")
+    @RequestMapping("user/doUserListUI")
     public String doUserListUI(){
         return "system/user_list";
     }
@@ -90,7 +91,7 @@ public class PageController {
      *
      * @return system/user_edit
      */
-    @RequestMapping("/user/doUserEditUI")
+    @RequestMapping("user/doUserEditUI")
     public String doUserEditUI(){
         return "system/user_edit";
     }
@@ -101,7 +102,7 @@ public class PageController {
      * @return system/role_list
      */
     @RequiresPermissions(value = {"admin", "role"})
-    @RequestMapping("/role/doRoleListUI")
+    @RequestMapping("role/doRoleListUI")
     public String doRoleListUI() {
         return "system/role_list";
     }
@@ -111,27 +112,27 @@ public class PageController {
      *
      * @return system/role_edit
      */
-    @RequestMapping("/role/doRoleEditUI")
+    @RequestMapping("role/doRoleEditUI")
     public String doRoleEditUI(){
         return "system/role_edit";
     }
 
-    @RequestMapping("/md_menu/doMdMenuListUI")
+    @RequestMapping("md_menu/doMdMenuListUI")
     public String doMdMenuListUI(){
         return "system/md_menu_list";
     }
 
-    @RequestMapping("/md_menu/doMdMenuEditUI")
+    @RequestMapping("md_menu/doMdMenuEditUI")
     public String doMdMenuEditUI(){
         return "system/md_menu_edit";
     }
 
-    @RequestMapping("/markdown/doMarkdownListUI")
+    @RequestMapping("markdown/doMarkdownListUI")
     public String doMarkdownListUI(){
         return "system/markdown_list";
     }
 
-    @RequestMapping("/markdown/doMarkdownEditUI")
+    @RequestMapping("markdown/doMarkdownEditUI")
     public String doMarkdownEditUI() {
         return "system/markdown_edit";
     }
