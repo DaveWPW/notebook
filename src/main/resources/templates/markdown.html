@@ -1,9 +1,13 @@
 <div class="row">
     <div id="layout">
+        <div style="margin-left:5%; margin-right:5%;">
+            <div style="float:right; margin-right:10px;">
+                <a onclick="doTreeState(1)">显示</a> | <a onclick="doTreeState(2)">隐藏</a>
+            </div>
+        </div>
         <div id="test-editormd-view">
-            <a onclick="doTreeState(1)">显示</a> | <a onclick="doTreeState(2)">隐藏</a>
             <div style="float:right; width:260px;">
-                <div id="tree" class="ztree" style="background:#DDDDDD;" align="left"></div>
+                <div id="tree" class="ztree" style="background:#F5F5F5;" align="left"></div>
             </div>
             <textarea id="append-test" class="markdown-body" style="display:none;" th:text="${markdownContent}"></textarea>
         </div>

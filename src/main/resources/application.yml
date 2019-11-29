@@ -14,9 +14,9 @@ spring:
     #配置mysql数据库
     #mysql新版驱动
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/notebook?serverTimezone=CTT
+    url: jdbc:mysql://39.108.185.174:3306/notebook?serverTimezone=CTT
     username: root
-    password: root
+    password:
     #druid连接池配置
     druid:
       #初始化大小、最小空闲、最大激活
