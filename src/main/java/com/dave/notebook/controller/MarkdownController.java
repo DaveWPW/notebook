@@ -42,7 +42,7 @@ public class MarkdownController {
     @RequestMapping("doGetMarkdownFile")
     public JsonResult doGetMarkdownFile(String fileName){
         if(StringUtils.isEmpty(fileName)){
-            return new JsonResult("文件名不能为空！！");
+            return new JsonResult("文件名不能为空!!");
         }
         String username = ShiroUtil.getCurrentUser().getUsername();
         String markdownContent = markdownService.getMarkdownFile(username, fileName);
@@ -55,67 +55,71 @@ public class MarkdownController {
     @RequestMapping("doAddMarkdown")
     public JsonResult doAddMarkdown(String markdownContent, String fileName){
         if(StringUtils.isEmpty(fileName)){
-            return new JsonResult("文件名不能为空！！");
+            return new JsonResult("文件名不能为空!!");
         }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int count = markdownService.selectFileName(username, fileName);
         if(count > 0){
-            return new JsonResult("文件名已存在！！");
+            return new JsonResult("文件名已存在!!");
         }
         int row = markdownService.addMaekdown(username, fileName, markdownContent);
         if(row == 1 && fileName.equals("README")){
-            return new JsonResult("编辑成功！！", 1);
+            return new JsonResult("Edit Successfully!", 1);
         }
         if(row == 1){
-            return new JsonResult("添加成功！！", 1);
+            return new JsonResult("Added Successfully!", 1);
         }else{
-            return new JsonResult("添加失败！！");
+            return new JsonResult("Add Failed!!");
         }
     }
 
     @RequestMapping("doUpdateMarkdown")
     public JsonResult doUpdateMarkdown(String markdownContent, String fileName, String oldFileName, Integer markdownId){
         if(null == markdownId){
-            return new JsonResult("非法参数！！");
+            return new JsonResult("非法参数");
         }
         if(StringUtils.isEmpty(fileName)){
-            return new JsonResult("文件名不能为空！！");
+            return new JsonResult("文件名不能为空!!");
         }
         String username = ShiroUtil.getCurrentUser().getUsername();
         if(!fileName.equals(oldFileName)){
             int count = markdownService.selectFileName(username, fileName);
             if(count > 0){
-                return new JsonResult("文件名已存在！！");
+                return new JsonResult("文件名已存在!!");
             }
         }
         int row = markdownService.updateMaekdown(username, fileName, oldFileName, markdownContent, markdownId);
         if(row == 1){
-            return new JsonResult("修改成功！！", 1);
+            return new JsonResult("Updated Successfully!", 1);
         }
-        return new JsonResult("修改失败！！");
+        return new JsonResult("Update Failed!!");
     }
 
     @RequestMapping("doDeleteMarkdown")
     public JsonResult doDeleteMarkdown(Integer markdownId, String fileName){
         if(null == markdownId){
-            return new JsonResult("非法参数！！");
+            return new JsonResult("非法参数");
         }
         if(StringUtils.isEmpty(fileName)){
-            return new JsonResult("文件名不能为空！！");
+            return new JsonResult("文件名不能为空!!");
         }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int row = markdownService.deleteMarkdown(markdownId, username, fileName);
         if(row == 1){
-            return new JsonResult("删除成功！！", 1);
+            return new JsonResult("Deleted Successfully!", 1);
         }
-        return new JsonResult("删除失败！！");
+        return new JsonResult("Delete Failed!!");
     }
 
     @RequestMapping("doImageUploadFile")
     public void doUploadImageFile(@RequestParam(value = "editormd-image-file", required = true) MultipartFile file,
                               HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         String username = ShiroUtil.getCurrentUser().getUsername();
-        String url = markdownService.uploadImageFile(username, file, request, response);
+        String fileName = markdownService.uploadImageFile(username, file);
+        //全路径（协议类型://域名/项目名/命名空间/文件名）
+        String url = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/markdown/upload/"+username+"/"+fileName;
         JSONObject json = new JSONObject();
         PrintWriter wirte = null;
         try {

@@ -49,59 +49,59 @@ public class MdMenuController {
     @RequestMapping("doAddMdMenu")
     public JsonResult doAddMdMenu(MarkdownMenu markdownMenu){
         if(null == markdownMenu){
-            return new JsonResult("非法参数！！");
+            return new JsonResult("非法参数");
         }
         if(StringUtils.isEmpty(markdownMenu.getMenuName())){
-            return new JsonResult("菜单名不能为空！！");
+            return new JsonResult("菜单名不能为空!!");
         }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int conut = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuName());
         if(conut > 0){
-            return new JsonResult("菜单名称已存在！！");
+            return new JsonResult("菜单名称已存在!!");
         }
         int row = mdMenuService.addMdMenu(username, markdownMenu);
         if(row == 1){
-            return new JsonResult("添加成功！！", 1);
+            return new JsonResult("Added Successfully!", 1);
         }else{
-            return new JsonResult("添加失败！！");
+            return new JsonResult("Add Failed!!");
         }
     }
 
     @RequestMapping("doUpdateMdMenu")
     public JsonResult doUpdateMdMemu(MarkdownMenu markdownMenu){
         if(null == markdownMenu){
-            return new JsonResult("非法参数！！");
+            return new JsonResult("非法参数");
         }
         if(StringUtils.isEmpty(markdownMenu.getMenuName())){
-            return new JsonResult("菜单名不能为空！！");
+            return new JsonResult("菜单名不能为空!!");
         }
         String username = ShiroUtil.getCurrentUser().getUsername();
         int conut = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuName(), markdownMenu.getMenuId());
         if(conut > 0){
-            return new JsonResult("菜单名称已存在！！");
+            return new JsonResult("菜单名称已存在!!");
         }
         int conut2 = mdMenuService.selectConutMdMenu(username, markdownMenu.getMenuId());
         if(conut2 > 0){
-            return new JsonResult("存在下级文件不能修改！！");
+            return new JsonResult("存在下级文件不能修改!!");
         }
         int row = mdMenuService.updateMdMenu(username, markdownMenu);
         if(row == 1){
-            return new JsonResult("修改成功！！", 1);
+            return new JsonResult("Updated Successfully!", 1);
         }else{
-            return new JsonResult("修改失败！！");
+            return new JsonResult("Update Failed!!");
         }
     }
 
     @RequestMapping("doDeleteMdMenu")
     public JsonResult doDeleteMdMenu(Integer menuId){
         if(null == menuId){
-            return new JsonResult("非法参数！！");
+            return new JsonResult("非法参数");
         }
         int row = mdMenuService.deleteMdMenu(menuId);
         if(row == 1){
-            return new JsonResult("删除成功！！", 1);
+            return new JsonResult("Deleted Successfully!", 1);
         }else{
-            return new JsonResult("删除失败！！");
+            return new JsonResult("Delete Failed!!");
         }
     }
 

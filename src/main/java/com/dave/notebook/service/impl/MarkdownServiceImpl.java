@@ -117,8 +117,8 @@ public class MarkdownServiceImpl implements MarkdownService {
     }
 
     @Override
-    public String uploadImageFile(String username, MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
-        String url = FileUtils.uploadImageFile(username, file, request, response);
+    public String uploadImageFile(String username, MultipartFile file) {
+        String url = FileUtils.uploadImageFile(username, file);
         return url;
     }
 

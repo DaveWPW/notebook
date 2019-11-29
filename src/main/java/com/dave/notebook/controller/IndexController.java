@@ -58,25 +58,25 @@ public class IndexController {
     @PostMapping("doUpdatePassword")
     public JsonResult doUpdatePassword(String oldPassword, String newPassword){
         if(StringUtils.isEmpty(oldPassword)) {
-            return new JsonResult("旧密码不能为空");
+            return new JsonResult("旧密码不能为空!!");
         }
         if(StringUtils.isEmpty(newPassword)) {
-            return new JsonResult("新密码不能为空");
+            return new JsonResult("新密码不能为空!!");
         }
         User user = ShiroUtil.getCurrentUser();
         SimpleHash oldHash = new SimpleHash("MD5", oldPassword, user.getPasswordSalt());
         String oldHex = oldHash.toHex();
         if(!oldHex.equals(user.getPassword())) {
-            return new JsonResult("旧密码错误！！");
+            return new JsonResult("旧密码错误!!");
         }
         SimpleHash newHash = new SimpleHash("MD5", newPassword, user.getPasswordSalt());
         String newHex = newHash.toHex();
         if(newHex.equals(user.getPassword())) {
-            return new JsonResult("新密码和旧密码不能相同！！");
+            return new JsonResult("新密码和旧密码不能相同!!");
         }
         int row = userService.updatePassword(user.getUserId(), newHex);
         if(row == 1) {
-            return new JsonResult("Update Succeed!", row);
+            return new JsonResult("Updated Successfully!", row);
         }
         return new JsonResult("Update Failed!!");
     }

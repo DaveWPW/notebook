@@ -51,7 +51,7 @@ public class UserController {
     	if(rows != 1) {
     		return new JsonResult("Add Failed!!");
     	}
-    	return new JsonResult("Add Succeed!", rows);
+    	return new JsonResult("Added Successfully!", rows);
     }
     
     /**
@@ -79,7 +79,7 @@ public class UserController {
     @RequestMapping("doFindUserById")
     public JsonResult doFindUserById(Integer userId){
     	if(StringUtils.isEmpty(userId)) {
-    		return new JsonResult("用户ID不能为空");
+    		return new JsonResult("用户ID不能为空!!");
     	}
     	User user = userService.findUserById(userId);
     	return new JsonResult(user);
@@ -94,14 +94,14 @@ public class UserController {
     @RequestMapping("doUpdateUser")
     public JsonResult doUpdateUser(User user){
     	if(user == null) {
-    		return new JsonResult("保存对象不能为空");
+    		return new JsonResult("保存对象不能为空!!");
     	}
     	String admin = "admin";
     	if(admin.equals(user.getUsername()) && user.getIsRestPassword() == 0) {
-    		return new JsonResult("禁止修改admin用户！！");
+    		return new JsonResult("禁止修改admin用户!!");
     	}
     	if(admin.equals(user.getUsername()) && user.getRoleId() != 1) {
-    		return new JsonResult("禁止修改admin用户！！");
+    		return new JsonResult("禁止修改admin用户!!");
     	}
     	if(StringUtils.isEmpty(user.getUserId())) {
     		return new JsonResult("用户ID不能为空");
@@ -117,9 +117,9 @@ public class UserController {
     		User currentUser = ShiroUtil.getCurrentUser();
     		String username = currentUser.getUsername();
     		if(username.equals(user.getUsername()) && user.getIsRestPassword() == 1) {
-    			return new JsonResult("Update Succeed!", 2);
+    			return new JsonResult("Updated Succeed!", 2);
     		}
-    		return new JsonResult("Update Succeed!", row);
+    		return new JsonResult("Updated Successfully!", row);
     	}
     	return new JsonResult("Update Failed!!");
     }
@@ -136,7 +136,7 @@ public class UserController {
     		return new JsonResult("用户ID不能为空");
     	}
     	if(userId == 1) {
-    		return new JsonResult("禁止删除admin用户！！");
+    		return new JsonResult("禁止删除admin用户!!");
     	}
     	User user = (User)SecurityUtils.getSubject().getPrincipal();
     	int id = user.getUserId();
@@ -147,7 +147,7 @@ public class UserController {
 		if(rows != 1) {
 			return new JsonResult("Delete Failed!!");
 		}
-		return new JsonResult("Delete Succeed!", rows);
+		return new JsonResult("Deleted Successfully!", rows);
     }
     
 }

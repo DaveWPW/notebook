@@ -47,7 +47,7 @@ public class RoleController {
     	}
     	int row = roleService.addRole(role);
     	if(row == 1) {
-    		return new JsonResult("Add Succeed!", row); 		
+    		return new JsonResult("Added Successfully!", row);
     	}
     	return new JsonResult("Add Failed!!");
     }
@@ -92,7 +92,7 @@ public class RoleController {
     	}
     	String admin = "admin";
     	if(admin.equals(role.getRoleName())) {
-    		return new JsonResult("禁止修改admin角色！！");
+    		return new JsonResult("禁止修改admin角色!!");
     	}
     	if(StringUtils.isEmpty(role.getRoleId())) {
     		return new JsonResult("角色ID不能为空");
@@ -105,7 +105,7 @@ public class RoleController {
     	}
     	int row = roleService.updateRole(role);
     	if(row == 1) {
-    		return new JsonResult("Update Succeed!", row); 		
+    		return new JsonResult("Updated Successfully!", row);
     	}
     	return new JsonResult("Update Failed!!");
     }
@@ -122,17 +122,17 @@ public class RoleController {
     		return new JsonResult("角色ID不能为空");
     	}
     	if(roleId == 1) {
-    		return new JsonResult("禁止删除admin角色！！");
+    		return new JsonResult("禁止删除admin角色!!");
     	}
 		String info = roleService.deleteRole(roleId);
 		if(info != null) {
 			if("Delete Failed!!".equals(info)) {
 				return new JsonResult(info);
 			} else {
-				return new JsonResult(info+"已使用该角色, 拒绝删除！");
+				return new JsonResult(info+"已使用该角色, 拒绝删除!");
 			}
 		}
-		return new JsonResult("Delete Succeed!", 1);
+		return new JsonResult("Deleted Successfully!", 1);
 	}
     
     /**

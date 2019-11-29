@@ -18,9 +18,7 @@ public class FileUtils {
 	 * @param response
 	 * @return
 	 */
-    public static String uploadImageFile(String username, MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
-		response.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=UTF-8");
+    public static String uploadImageFile(String username, MultipartFile file) {
 		//获取文件名
 		String fileName = file.getOriginalFilename();
 		//使用UUID重命名
@@ -38,9 +36,7 @@ public class FileUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//全路径（协议类型://域名/项目名/命名空间/文件名）
-		String url = request.getScheme()+"://"+request.getServerName()+request.getContextPath()+"/markdown/upload/"+username+"/"+fileName;
-		return url;
+		return fileName;
 	}
 
 	/**

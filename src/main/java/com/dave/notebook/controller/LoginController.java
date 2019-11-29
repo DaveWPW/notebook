@@ -48,8 +48,8 @@ public class LoginController {
 		Subject currentUser = SecurityUtils.getSubject();
 		try {
 			currentUser.login(token);
-			logger.info(username+" 登录成功！！"+new Date());
-			return new JsonResult("Login Succeed!", 1);
+			logger.info(username+" 登录成功"+new Date());
+			return new JsonResult("Login Succeed", 1);
 		} catch (UnknownAccountException e) {
 			return new JsonResult("此用户不存在");
 		} catch (IncorrectCredentialsException e) {

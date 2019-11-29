@@ -29,7 +29,7 @@ public interface MarkdownService {
 
     String findMarkdownById(String username, Integer markdownId);
 
-    String uploadImageFile(String username, MultipartFile file, HttpServletRequest request, HttpServletResponse response);
+    String uploadImageFile(String username, MultipartFile file);
 
     List<Markdown> findMarkdownListName(String username);
 }
