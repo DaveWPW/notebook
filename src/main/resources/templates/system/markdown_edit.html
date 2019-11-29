@@ -14,13 +14,15 @@
     var testEditor;
     $(function () {
         testEditor = editormd("markdownEditor", {
-            width: "100%",
-            height: 500,
-            syncScrolling: "single",
-            path: "bower_components/editormd/lib/",
-            imageUpload: true,
-            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-            imageUploadURL: "markdown/doImageUploadFile",
+            //开启emoji（默认关闭）
+            emoji : true,
+            width : "100%",
+            height : 500,
+            syncScrolling : "single",
+            path : "bower_components/editormd/lib/",
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "markdown/doImageUploadFile",
         });
         $("#markdownEditor")
                 .on("click", ".editormd-preview-close-btn", doCancel);
