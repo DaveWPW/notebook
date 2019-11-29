@@ -168,7 +168,10 @@
         $.post(url, params, function (result) {
             if (result.state == 1) {
                 alert(result.message);
-                doDeleteRowElement();//局部刷新
+                //doDeleteRowElement();//局部刷新
+                $("#mainContentId").load("md_menu/doMdMenuListUI", function () {
+                    $("#mainContentId").removeData();
+                });
             } else {
                 alert(result.message);
             }
