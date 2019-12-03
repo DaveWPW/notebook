@@ -115,7 +115,21 @@
 			var fileName = $(this).parents("tr").find("td").eq(1).html();
 			$("#mainContentId").data("markdownId", markdownId);
 			$("#mainContentId").data("fileName", fileName);
-			doLoadPage();
+			doGetMarkdownFile(fileName);
+		}
+	}
+	function doGetMarkdownFile(fileName) {
+		if(fileName){
+			var url = "markdown/doGetMarkdownFile";
+			var params = {"fileName": fileName}
+			$.post(url, params, function (result) {
+				if (result.state == 1) {
+					$("#mainContentId").data("markdownContent", result.data);
+					doLoadPage();
+				} else {
+					alert("获取" + fileName + ".md内容失败！！");
+				}
+			});
 		}
 	}
 	function doLoadPage() {

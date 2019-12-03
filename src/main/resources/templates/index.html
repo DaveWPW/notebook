@@ -280,10 +280,24 @@
     //首页编辑
     function doHomeEditUI() {
         var fileName = $("#fileName").val();
-        $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
-            $("#mainContentId").removeData();
-            $("#mainContentId").data("fileName", fileName);
-        });
+        doGetMarkdownFile(fileName);
+    }
+    function doGetMarkdownFile(fileName) {
+        if(fileName){
+            var url = "markdown/doGetMarkdownFile";
+            var params = {"fileName": fileName}
+            $.post(url, params, function (result) {
+                if (result.state == 1) {
+                    $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
+                        $("#mainContentId").removeData();
+                        $("#mainContentId").data("fileName", fileName);
+                        $("#mainContentId").data("markdownContent", result.data);
+                    });
+                } else {
+                    alert("获取" + fileName + ".md内容失败！！");
+                }
+            });
+        }
     }
 
     //修改密码页面

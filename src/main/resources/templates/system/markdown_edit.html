@@ -1,5 +1,5 @@
 <div id="layout">
-    <div style="display: none; margin:0px 5px 5px 0px;" id="markdownName">
+    <div style="margin:0px 5px 5px 0px;" id="markdownName">
         <input type="text" name="markdownName" class="markdown-name">.md
     </div>
     <div id="markdownEditor">
@@ -13,6 +13,7 @@
 <script type="text/javascript">
     var testEditor;
     $(function () {
+        doInitState();
         testEditor = editormd("markdownEditor", {
             //开启emoji（默认关闭）
             emoji : true,
@@ -24,31 +25,20 @@
             imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
             imageUploadURL : "markdown/doImageUploadFile",
         });
-        $("#markdownEditor")
-                .on("click", ".editormd-preview-close-btn", doCancel);
-        $("#layout")
-                .on("click", ".btn-save", doSaveOrUpdateMarkdown);
-        doGetMarkdownFile();
+        $("#layout").on("click", ".btn-save", doSaveOrUpdateMarkdown);
+        $("#markdownEditor").on("click", ".editormd-preview-close-btn", doCancel);
     });
-    function doGetMarkdownFile() {
+    function doInitState() {
         var fileName = $("#mainContentId").data("fileName");
         if(fileName){
             if (fileName != "README") {
-                $("#markdownName").show();
                 $(".markdown-name").val(fileName);
+            }else{
+                $("#markdownName").css("display","none");
             }
-            var url = "markdown/doGetMarkdownFile";
-            var params = {"fileName": fileName}
-            $.post(url, params, function (result) {
-                if (result.state == 1) {
-                    $("#markdownContent").val(result.data);
-                    $("#markdownName").find("input").val(fileName);
-                } else {
-                    alert("获取" + fileName + ".md内容失败！！");
-                }
-            });
-        }else{
-            $("#markdownName").show();
+            $("#markdownName").find("input").val(fileName);
+            var markdownContent = $("#mainContentId").data("markdownContent");
+            $("#markdownContent").val(markdownContent);
         }
     }
     function doSaveOrUpdateMarkdown() {
