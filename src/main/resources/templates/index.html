@@ -26,6 +26,17 @@
             width: 90%;
             margin: 0 auto;
         }
+        .Topshow{
+            width: 30px;
+            height: 30px;
+            position: fixed;
+            line-height: 36px;
+            right: 20px;
+            bottom: 20px;
+            display: none;
+            cursor: pointer;
+            text-align: center;
+    }
     </style>
 </head>
 <!--<body class="hold-transition skin-blue sidebar-mini">-->
@@ -107,6 +118,7 @@
                               th:text="${markdownContent}"></textarea>
                 </div>
             </div>
+            <a class="Topshow"><span class="glyphicon glyphicon-circle-arrow-up" style="font-size:30px;" aria-hidden="true"></span></a>
         </section>
         <!-- /.content -->
     </div>
@@ -136,6 +148,18 @@
         doFindUserMenuList();
         doFindMdMenuList();
         doShowMarkDown();
+        <!-- 返回顶部开始 -->
+        $(window).scroll(function(){
+            if($(window).scrollTop() >= 200){
+                $('.Topshow').fadeIn(1000); //1000指时间，淡入效果来显示
+            }else{
+                $('.Topshow').fadeOut(1000);//1000指时间，淡入效果来隐藏
+            }
+        });
+        $('.Topshow').click(function(){
+            $('html,body').animate({scrollTop: '0px'});//800滑动的速度
+        });
+        <!-- 返回顶部结束 -->
     })
 
     //1.1.查询用户菜单
