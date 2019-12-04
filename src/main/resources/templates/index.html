@@ -308,20 +308,22 @@
     }
     function doGetMarkdownFile(fileName) {
         if(fileName){
-            var url = "markdown/doGetMarkdownFile";
-            var params = {"fileName": fileName}
-            $.post(url, params, function (result) {
-                if (result.state == 1) {
-                    $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
-                        $("#mainContentId").removeData();
-                        $("#mainContentId").data("fileName", fileName);
-                        $("#mainContentId").data("markdownContent", result.data);
-                    });
-                } else {
-                    alert("获取" + fileName + ".md内容失败！！");
-                }
-            });
+        }else{
+            fileName = "README";
         }
+        var url = "markdown/doGetMarkdownFile";
+        var params = {"fileName": fileName}
+        $.post(url, params, function (result) {
+            if (result.state == 1) {
+                $("#mainContentId").load("markdown/doMarkdownEditUI", function () {
+                    $("#mainContentId").removeData();
+                    $("#mainContentId").data("fileName", fileName);
+                    $("#mainContentId").data("markdownContent", result.data);
+                });
+            } else {
+                alert("编辑首页失败！！");
+            }
+        });
     }
 
     //修改密码页面
