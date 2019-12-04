@@ -56,8 +56,9 @@ public class UserServiceImpl implements UserService {
         PageHelper.startPage(pageCurrent, 10);
         PageInfo<User> pageInfo = null;
         if(StringUtils.isEmpty(username)){
-            Example example = new Example(User.class);
-            pageInfo = new PageInfo<>(userMapper.selectByExample(example));
+            User user = new User();
+            user.setStatus(1);
+            pageInfo = new PageInfo<>(userMapper.select(user));
         }else{
             pageInfo = new PageInfo<>(userMapper.findListByName(username));
         }
