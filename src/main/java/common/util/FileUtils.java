@@ -23,7 +23,7 @@ public class FileUtils {
 		//使用UUID重命名
 		fileName = UUID.randomUUID() + fileName.substring(fileName.indexOf("."), fileName.length());
 		//文件存放的路径
-		File targetFile = new File("/var/notebook/upload/"+username+"/images/"+fileName);
+		File targetFile = new File("D:/notebook/upload/"+username+"/images/"+fileName);
 		//是否存在
 		if(!targetFile.exists()){
 			//创建目录
@@ -46,7 +46,7 @@ public class FileUtils {
 	 * @param response
 	 */
 	public static void getImageFile(String username, String fileName, HttpServletResponse response) {
-		String filePath = "/var/notebook/upload/"+username+"/images/"+fileName;
+		String filePath = "D:/notebook/upload/"+username+"/images/"+fileName;
 		File file = new File(filePath);
 		if(file.exists()){
 			FileInputStream fileInputStream = null;
@@ -83,12 +83,12 @@ public class FileUtils {
 	 * @return
 	 */
     public static boolean uploadMarkDownFile(String username, String fileName, String data) {
-		File mkdir = new File("/var/notebook/upload/"+username+"/markdown/");
+		File mkdir = new File("D:/notebook/upload/"+username+"/markdown/");
 		//是否存在
 		if(!mkdir.exists()){
 			mkdir.mkdirs();
 		}
-    	File file = new File("/var/notebook/upload/"+username+"/markdown/"+fileName+".md");
+    	File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
 		try {
 			//是否存在
 			if(!file.exists()){
@@ -161,7 +161,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static String getMarkdownFile(String username, String fileName) {
-		File file = new File("/var/notebook/upload/"+username+"/markdown/"+fileName+".md");
+		File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
         if(!file.isFile()) {
         	return null;
         }
@@ -208,7 +208,7 @@ public class FileUtils {
 	 * @return
 	 */
 	public static boolean deleteMarkdownFile(String username, String fileName) {
-		File file = new File("/var/notebook/upload/"+username+"/markdown/"+fileName+".md");
+		File file = new File("D:/notebook/upload/"+username+"/markdown/"+fileName+".md");
 		if (file.exists() && file.isFile()) {
 			if (file.delete()) {
 				return true;
