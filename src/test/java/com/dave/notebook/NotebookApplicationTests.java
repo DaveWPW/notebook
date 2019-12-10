@@ -1,23 +1,16 @@
 package com.dave.notebook;
 
-import com.dave.notebook.entity.Role;
-import com.dave.notebook.entity.RoleMenu;
-import com.dave.notebook.entity.User;
 import com.dave.notebook.mapper.RoleMapper;
 import com.dave.notebook.mapper.RoleMenuMapper;
 import com.dave.notebook.mapper.UserMapper;
-import org.apache.shiro.crypto.hash.SimpleHash;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import org.springframework.util.StringUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NotebookApplication.class)
@@ -28,6 +21,25 @@ public class NotebookApplicationTests {
 	private RoleMapper roleMapper;
 	@Autowired
 	private RoleMenuMapper roleMenuMapper;
+	@Autowired
+	private RedisTemplate<String,String> redisTemplate;
+	@Test
+	public void contextLoads() throws JsonProcessingException {
+//		//1.从redis中获取数据
+//		String value = redisTemplate.boundValueOps("k1").get();
+//		System.out.println("k1="+value);
+//		String value2 = redisTemplate.boundValueOps("k2").get();
+//		System.out.println("k2="+value2);
+//		if(StringUtils.isEmpty(value2)){
+//			//2.给redis添加数据
+//			redisTemplate.boundValueOps("k2").set("v2");
+//			value2 = redisTemplate.boundValueOps("k2").get();
+//			System.out.println("k2-->"+value2);
+//		}
+	}
+
+
+
 	@Test
 	public void addUser(){
 //		User user = new User();

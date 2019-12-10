@@ -9,6 +9,10 @@ spring:
   mvc:
     favicon:
       enabled: false
+  #Redis
+  redis:
+    host: 192.168.3.103
+    port: 6379
   #数据源配置
   datasource:
     #配置mysql数据库
