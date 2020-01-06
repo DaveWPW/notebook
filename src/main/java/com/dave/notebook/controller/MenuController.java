@@ -25,7 +25,6 @@ public class MenuController {
      * @return
      */
     @RequestMapping("doFindMenuNodes")
-	@ResponseBody
 	public JsonResult doFindMenuNodes(){
 		 return new JsonResult(menuService.findMenuNodes());
 	}
